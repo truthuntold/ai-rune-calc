@@ -1,14 +1,16 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.0';
+const version = '1.0.2';
 
 const changelog = [
-    { version: '1.0.0', date: '2025-08-01', changes: ['Added versioning and a changelog.', 'Improved styling for rune descriptions to prevent text squishing.', 'Added a message to report incorrect values to LeftySix on Discord.', 'Made RPS input parsing case-insensitive.'] },
+    { version: '1.0.2', date: '2025-08-01', changes: ['Added a clarifying line to note that times are for a single rune.'] },
+    { version: '1.0.1', date: '2025-08-01', changes: ['Corrected the chance for the Vanta rune.'] },
+    { version: '1.0.0', date: '2025-08-01', changes: ['Added versioning and a changelog.', 'Improved styling for rune descriptions.', 'Added a message to report incorrect values.', 'Made RPS input parsing case-insensitive.'] },
     { version: '0.9.0', date: '2025-07-31', changes: ['Added rune stat descriptions to each entry.', 'Updated rune data and number scaling to the latest values.'] },
-    { version: '0.8.0', date: '2025-07-30', changes: ['Refactored the UI to use a tabbed interface for the main calculator and the "What If?" tool.', 'Set "Hide Instant Runes" to be on by default.'] },
-    { version: '0.7.0', date: '2025-07-29', changes: ['Added a "What If?" Target Calculator to find the required RPS for a specific goal.', 'Added a "Next Upgrade" highlight for achievable runes.', 'RPS input is now saved to the browser\'s local storage.', 'Added a text filter for the rune list.'] },
-    { version: '0.6.0', date: '2025-07-28', changes: ['Added scientific notation next to all number values.', 'Added sorting options for the rune list.', 'Added a checkbox to hide instant runes.', 'The RPS scale dropdown is now a searchable/filterable input.'] },
+    { version: '0.8.0', date: '2025-07-30', changes: ['Refactored the UI to use a tabbed interface.', 'Set "Hide Instant Runes" to be on by default.'] },
+    { version: '0.7.0', date: '2025-07-29', changes: ['Added a "What If?" Target Calculator.', 'Added a "Next Upgrade" highlight.', 'RPS input is now saved to local storage.', 'Added a text filter for the rune list.'] },
+    { version: '0.6.0', date: '2025-07-28', changes: ['Added scientific notation to all values.', 'Added sorting options.', 'Added a checkbox to hide instant runes.', 'The RPS scale dropdown is now a searchable input.'] },
     { version: '0.5.0', date: '2025-07-27', changes: ['Initial public version of the Rune Calculator.'] },
 ];
 
@@ -288,7 +290,7 @@ export default function App() {
         
         <header className="text-center mb-8">
           <h1 className="text-4xl sm:text-5xl font-bold text-cyan-400 mb-2">Rune Time Calculator</h1>
-          <p className="text-lg text-gray-400">A strategic tool for planning your progression. <span className="text-xs text-gray-500">v{version}</span></p>
+          <p className="text-lg text-gray-400">A strategic tool for planning your progression. Times shown are for a single rune. <span className="text-xs text-gray-500">v{version}</span></p>
         </header>
 
         <div className="flex border-b border-gray-700 mb-0">
