@@ -18,6 +18,7 @@ const generateScaleMap = () => {
     { name: 'De', power: 33 },   // Decillion
     { name: 'Vg', power: 63 },   // Vigintillion
     { name: 'Tg', power: 93 },   // Trigintillion
+    { name: 'qg', power: 123 },  // Quadragintillion
   ];
 
   for (const major of majorIllions) {
@@ -30,6 +31,10 @@ const generateScaleMap = () => {
   
   const aliases = {
     'QnTg': 1e99,  'SxVt': 1e81, 'TVt': 1e72, 'OcVt': 1e87, 'TTg': 1e102, 'QnVt': 1e78,
+    // New Aliases from user data
+    'NoTg': 1e120, // NovemTrigintillion
+    'Dqg': 1e129,  // Duquadragintillion
+    'Qdqg': 1e135, // Quattuorquadragintillion
   };
   Object.assign(scales, aliases);
 
@@ -45,18 +50,32 @@ const scale = generateScaleMap();
 const scaleEntries = Object.entries(scale).sort(([, a], [, b]) => b - a);
 
 const runesData = [
-  { name: 'Bloom', source: 'Color Rune', chance: 7.5e9 }, { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10 },
-  { name: 'Superstar', source: '5M Beginner', chance: 2.5e10 }, { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10 },
-  { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11 }, { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11 },
-  { name: 'Mystery', source: 'Basic Rune', chance: 1e12 }, { name: 'Thorn', source: 'Nature Rune', chance: 1e13 },
-  { name: 'Divinity', source: '5M Royal', chance: 7.5e16 }, { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17 },
-  { name: 'Prosperity', source: '5M Royal', chance: 2.5e22 }, { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27 },
-  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32 }, { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42 },
-  { name: 'Gleam', source: 'Color Rune', chance: 1.5e46 }, { name: 'Shyft', source: 'Unspecified Source', chance: 1e56 },
-  { name: 'Overlord', source: '5M Beginner', chance: 5e58 }, { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60 },
-  { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73 }, { name: 'Immortality', source: '5M Royal', chance: 2e82 },
-  { name: 'Vanta', source: 'Color Rune', chance: 5e87 }, { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103 },
+  { name: 'Bloom', source: 'Color Rune', chance: 7.5e9 },
+  { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10 },
+  { name: 'Superstar', source: '5M Beginner', chance: 2.5e10 },
+  { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10 },
+  { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11 },
+  { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11 },
+  { name: 'Mystery', source: 'Basic Rune', chance: 1e12 },
+  { name: 'Thorn', source: 'Nature Rune', chance: 1e13 },
+  { name: 'Divinity', source: '5M Royal', chance: 7.5e16 },
+  { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17 },
+  { name: 'Prosperity', source: '5M Royal', chance: 2.5e22 },
+  { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27 },
+  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32 },
+  { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42 },
+  { name: 'Gleam', source: 'Color Rune', chance: 1e47 },
+  { name: 'Shyft', source: 'Unspecified Source', chance: 7.5e55 },
+  { name: 'Overlord', source: '5M Beginner', chance: 5e58 },
+  { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60 },
+  { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73 },
+  { name: 'Immortality', source: '5M Royal', chance: 2e82 },
+  { name: 'Vanta', source: 'Color Rune', chance: 5e87 },
   { name: 'Odyssey', source: '5M Royal', chance: 1.5e100 },
+  { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103 },
+  { name: 'Destiny', source: '5M Royal', chance: 5e121 },
+  { name: 'Squid', source: 'Nature Rune', chance: 1.5e130 },
+  { name: 'Array', source: 'Unspecified Source', chance: 1e135 },
 ];
 
 // --- Helper Functions ---
