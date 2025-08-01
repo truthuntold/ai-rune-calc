@@ -3,79 +3,79 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 // --- Data ---
 
 /**
- * Generates a comprehensive map of short scale number abbreviations to their values.
- * This creates a systematic list and includes common aliases for compatibility.
- * @returns {Object} A map where keys are abbreviations (e.g., 'M', 'B', 'T') and values are their numeric equivalents, sorted by value.
+ * Generates a comprehensive map of short scale number abbreviations to their values
+ * based on the user-provided list.
+ * @returns {Object} A map where keys are abbreviations and values are their numeric equivalents.
  */
 const generateScaleMap = () => {
   const scales = {
-    '': 1, 'K': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12, 'Qd': 1e15, 'Qn': 1e18,
-    'Sx': 1e21, 'Sp': 1e24, 'Oc': 1e27, 'No': 1e30,
+    '': 1,
+    // Standard names up to Decillion
+    'Thousand': 1e3, 'Million': 1e6, 'Billion': 1e9, 'Trillion': 1e12, 'Quadrillion': 1e15, 
+    'Quintillion': 1e18, 'Sextillion': 1e21, 'Septillion': 1e24, 'Octillion': 1e27, 'Nonillion': 1e30, 
+    'Decillion': 1e33,
+    // User provided short names
+    'K': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12, 'Qd': 1e15, 'Qn': 1e18, 'Sx': 1e21, 'Sp': 1e24, 
+    'Oc': 1e27, 'No': 1e30, 'De': 1e33,
+    'UDe': 1e36, 'DDe': 1e39, 'TDe': 1e42, 'QdDe': 1e45, 'QnDe': 1e48, 'SxDe': 1e51, 'SpDe': 1e54, 
+    'OcDe': 1e57, 'NoDe': 1e60, 'Vt': 1e63,
+    'UVt': 1e66, 'DVt': 1e69, 'TVt': 1e72, 'QdVt': 1e75, 'QnVt': 1e78, 'SxVt': 1e81, 'SpVt': 1e84, 
+    'OcVt': 1e87, 'NoVt': 1e90, 'Tg': 1e93,
+    'UTg': 1e96, 'DTg': 1e99, 'TTg': 1e102, 'QdTg': 1e105, 'QnTg': 1e108, 'SxTg': 1e111, 'SpTg': 1e114, 
+    'OcTg': 1e117, 'NoTg': 1e120, 'qg': 1e123,
+    'Uqg': 1e126, 'Dqg': 1e129, 'Tqg': 1e132, 'Qdqg': 1e135, 'Qnqg': 1e138, 'Sxqg': 1e141, 'Spqg': 1e144, 
+    'Ocqg': 1e147, 'Noqg': 1e150, 'Qg': 1e153,
+    'UQg': 1e156, 'DQg': 1e159, 'TQg': 1e162, 'QdQg': 1e165, 'QnQg': 1e168, 'SxQg': 1e171, 'SpQg': 1e174, 
+    'OcQg': 1e177, 'NoQg': 1e180, 'sg': 1e183,
+    'Usg': 1e186, 'Dsg': 1e189, 'Tsg': 1e192, 'Qdsg': 1e195, 'Qnsg': 1e198, 'Sxsg': 1e201, 'Spsg': 1e204, 
+    'Ocsg': 1e207, 'Nosg': 1e210, 'Sg': 1e213,
+    'USg': 1e216, 'DSg': 1e219, 'TSg': 1e222, 'QdSg': 1e225, 'QnSg': 1e228, 'SxSg': 1e231, 'SpSg': 1e234, 
+    'OcSg': 1e237, 'NoSg': 1e240, 'Og': 1e243,
+    'UOg': 1e246, 'DOg': 1e249, 'TOg': 1e252, 'QdOg': 1e255, 'QnOg': 1e258, 'SxOg': 1e261, 'SpOg': 1e264, 
+    'OcOg': 1e267, 'NoOg': 1e270, 'Ng': 1e273,
+    'UNg': 1e276, 'DNg': 1e279, 'TNg': 1e282, 'QdNg': 1e285, 'QnNg': 1e288, 'SxNg': 1e291, 'SpNg': 1e294, 
+    'OcNg': 1e297, 'NoNg': 1e300, 'Ce': 1e303,
+    'UCe': 1e306, 'DCe': 1e309, 'TCe': 1e312, 'QdCe': 1e315, 'QnCe': 1e318, 'SxCe': 1e321, 'SpCe': 1e324, 
+    'OcCe': 1e327, 'NoCe': 1e330, 'DeCe': 1e333, 'UDeCe': 1e336, 'DDeCe': 1e339, 'TDeCe': 1e342, 
+    'QdDeCe': 1e345, 'QnDeCe': 1e348, 'SxDeCe': 1e351, 'SpDeCe': 1e354, 'OcDeCe': 1e357, 'NoDeCe': 1e360,
+    'VtCe': 1e363, 'UVtCe': 1e366, 'DVtCe': 1e369, 'TVtCe': 1e372, 'QdVtCe': 1e375, 'QnVtCe': 1e378, 
+    'SxVtCe': 1e381, 'SpVtCe': 1e384, 'OcVtCe': 1e387, 'NoVtCe': 1e390, 'TgCe': 1e393, 'UTgCe': 1e396, 
+    'DTgCe': 1e399, 'TTgCe': 1e402, 'QdTgCe': 1e405, 'QnTgCe': 1e408, 'SxTgCe': 1e411, 'SpTgCe': 1e414, 
+    'OcTgCe': 1e417, 'NoTgCe': 1e420, 'qgCe': 1e423, 'UqgCe': 1e426, 'DqgCe': 1e429, 'TqgCe': 1e432, 
+    'QdqgCe': 1e435, 'QnqgCe': 1e438, 'SxqgCe': 1e441, 'SpqgCe': 1e444, 'OcqgCe': 1e447, 'NoqgCe': 1e450,
+    'QgCe': 1e453, 'UQgCe': 1e456, 'DQgCe': 1e459, 'TQgCe': 1e462, 'QdQgCe': 1e465, 'QnQgCe': 1e468, 
+    'SxQgCe': 1e471, 'SpQgCe': 1e474, 'OcQgCe': 1e477, 'NoQgCe': 1e480, 'sgCe': 1e483, 'UsgCe': 1e486, 
+    'DsgCe': 1e489, 'TsgCe': 1e492, 'QdsgCe': 1e495, 'QnsgCe': 1e498, 'SxsgCe': 1e501, 'SpsgCe': 1e504, 
+    'OcsgCe': 1e507, 'NosgCe': 1e510, 'SgCe': 1e513, 'USgCe': 1e516, 'DSgCe': 1e519, 'TSgCe': 1e522, 
+    'QdSgCe': 1e525, 'QnSgCe': 1e528, 'SxSgCe': 1e531, 'SpSgCe': 1e534, 'OcSgCe': 1e537, 'NoSgCe': 1e540,
+    'OgCe': 1e543, 'UOgCe': 1e546, 'DOgCe': 1e549, 'TOgCe': 1e552, 'QdOgCe': 1e555, 'QnOgCe': 1e558, 
+    'SxOgCe': 1e561, 'SpOgCe': 1e564, 'OcOgCe': 1e567, 'NoOgCe': 1e570, 'NgCe': 1e573, 'UNgCe': 1e576, 
+    'DNgCe': 1e579, 'TNgCe': 1e582, 'QdNgCe': 1e585, 'QnNgCe': 1e588, 'SxNgCe': 1e591, 'SpNgCe': 1e594, 
+    'OcNgCe': 1e597, 'NoNgCe': 1e600, 'Du': 1e603,
   };
-
-  const prefixes = ['', 'Un', 'Du', 'Tr', 'Qd', 'Qn', 'Sx', 'Sp', 'Oc', 'No'];
-  const majorIllions = [
-    { name: 'De', power: 33 },   // Decillion
-    { name: 'Vg', power: 63 },   // Vigintillion
-    { name: 'Tg', power: 93 },   // Trigintillion
-    { name: 'qg', power: 123 },  // Quadragintillion
-  ];
-
-  for (const major of majorIllions) {
-    for (let i = 0; i < prefixes.length; i++) {
-      const key = prefixes[i] + major.name;
-      const power = major.power + (i * 3);
-      scales[key] = Math.pow(10, power);
-    }
-  }
-  
-  const aliases = {
-    'QnTg': 1e99,  'SxVt': 1e81, 'TVt': 1e72, 'OcVt': 1e87, 'TTg': 1e102, 'QnVt': 1e78,
-    // New Aliases from user data
-    'NoTg': 1e120, // NovemTrigintillion
-    'Dqg': 1e129,  // Duquadragintillion
-    'Qdqg': 1e135, // Quattuorquadragintillion
-  };
-  Object.assign(scales, aliases);
-
-  const sortedEntries = Object.entries(scales).sort(([, valA], [, valB]) => valA - valB);
-  const sortedScales = {};
-  for (const [key, value] of sortedEntries) {
-      sortedScales[key] = value;
-  }
-  return sortedScales;
+  return scales;
 };
 
 const scale = generateScaleMap();
 const scaleEntries = Object.entries(scale).sort(([, a], [, b]) => b - a);
+// Create a sorted version for dropdowns that need it
+const sortedScale = Object.fromEntries(Object.entries(scale).sort(([, valA], [, valB]) => valA - valB));
+
 
 const runesData = [
-  { name: 'Bloom', source: 'Color Rune', chance: 7.5e9 },
-  { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10 },
-  { name: 'Superstar', source: '5M Beginner', chance: 2.5e10 },
-  { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10 },
-  { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11 },
-  { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11 },
-  { name: 'Mystery', source: 'Basic Rune', chance: 1e12 },
-  { name: 'Thorn', source: 'Nature Rune', chance: 1e13 },
-  { name: 'Divinity', source: '5M Royal', chance: 7.5e16 },
-  { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17 },
-  { name: 'Prosperity', source: '5M Royal', chance: 2.5e22 },
-  { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27 },
-  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32 },
-  { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42 },
-  { name: 'Gleam', source: 'Color Rune', chance: 1e47 },
-  { name: 'Shyft', source: 'Unspecified Source', chance: 7.5e55 },
-  { name: 'Overlord', source: '5M Beginner', chance: 5e58 },
-  { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60 },
-  { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73 },
-  { name: 'Immortality', source: '5M Royal', chance: 2e82 },
-  { name: 'Vanta', source: 'Color Rune', chance: 5e87 },
-  { name: 'Odyssey', source: '5M Royal', chance: 1.5e100 },
-  { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103 },
-  { name: 'Destiny', source: '5M Royal', chance: 5e121 },
-  { name: 'Squid', source: 'Nature Rune', chance: 1.5e130 },
-  { name: 'Array', source: 'Unspecified Source', chance: 1e135 },
+  { name: 'Bloom', source: 'Color Rune', chance: 7.5e9 }, { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10 },
+  { name: 'Superstar', source: '5M Beginner', chance: 2.5e10 }, { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10 },
+  { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11 }, { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11 },
+  { name: 'Mystery', source: 'Basic Rune', chance: 1e12 }, { name: 'Thorn', source: 'Nature Rune', chance: 1e13 },
+  { name: 'Divinity', source: '5M Royal', chance: 7.5e16 }, { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17 },
+  { name: 'Prosperity', source: '5M Royal', chance: 2.5e22 }, { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27 },
+  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32 }, { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42 },
+  { name: 'Gleam', source: 'Color Rune', chance: 1e47 }, { name: 'Shyft', source: 'Unspecified Source', chance: 7.5e55 },
+  { name: 'Overlord', source: '5M Beginner', chance: 5e58 }, { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60 },
+  { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73 }, { name: 'Immortality', source: '5M Royal', chance: 2e82 },
+  { name: 'Vanta', source: 'Color Rune', chance: 5e87 }, { name: 'Odyssey', source: '5M Royal', chance: 1.5e100 },
+  { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103 }, { name: 'Destiny', source: '5M Royal', chance: 5e121 },
+  { name: 'Squid', source: 'Nature Rune', chance: 1.5e130 }, { name: 'Array', source: 'Unspecified Source', chance: 1e135 },
 ];
 
 // --- Helper Functions ---
@@ -96,6 +96,7 @@ function formatTime(totalSeconds) {
 }
 
 function formatNumber(num) {
+    if (typeof num !== 'number' || !isFinite(num)) return '0';
     for (const [suffix, value] of scaleEntries) {
         if (value > 0 && num >= value) {
             const scaledNum = (num / value).toPrecision(3);
@@ -110,49 +111,35 @@ function formatChance(chance) {
     return `1 / ${formatNumber(chance)} ${scientific}`;
 }
 
+/**
+ * Parses a string like "1.5M" or "100QdVt" into a number.
+ * @param {string} input - The string to parse.
+ * @returns {number} The parsed numeric value.
+ */
+function parseRpsInput(input) {
+    if (typeof input !== 'string' || !input) return 0;
+    const cleanedInput = input.trim();
+    
+    // Regex to find a number followed by letters
+    const match = cleanedInput.match(/^(\d*\.?\d+)\s*([a-zA-Z]+)$/);
+
+    if (match) {
+        const numPart = parseFloat(match[1]);
+        const scalePart = match[2];
+        const multiplier = scale[scalePart];
+
+        if (multiplier) {
+            return numPart * multiplier;
+        }
+    }
+
+    // If no scale is found or regex doesn't match, try parsing as a plain number
+    const plainNumber = parseFloat(cleanedInput);
+    return isNaN(plainNumber) ? 0 : plainNumber;
+}
+
+
 // --- Custom Components ---
-const FilterableDropdown = ({ value, onChange }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [filter, setFilter] = useState('');
-    const dropdownRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-                setFilter('');
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const filteredOptions = useMemo(() => 
-        Object.keys(scale).filter(s => s.toLowerCase().includes(filter.toLowerCase()))
-    , [filter]);
-
-    const handleSelect = (s) => {
-        onChange(s);
-        setIsOpen(false);
-        setFilter('');
-    };
-
-    return (
-        <div className="relative w-full sm:w-3/5" ref={dropdownRef}>
-            <input type="text" value={isOpen ? filter : `${value} (${scale[value].toExponential(0)})`} onFocus={() => setIsOpen(true)} onChange={(e) => setFilter(e.target.value)} placeholder="Search scale..." className="w-full bg-gray-700 text-white text-lg p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500 focus:ring-cyan-500 transition text-center" />
-            {isOpen && (
-                <div className="absolute top-full left-0 right-0 bg-gray-800 border-2 border-gray-600 rounded-b-lg mt-1 max-h-60 overflow-y-auto z-20">
-                    {filteredOptions.map(s => (
-                        <div key={s} onClick={() => handleSelect(s)} className="p-3 text-white hover:bg-cyan-600 cursor-pointer transition">
-                            {s === '' ? 'None' : s} ({scale[s].toExponential(0)})
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-};
-
 const TargetCalculator = () => {
     const [targetRuneName, setTargetRuneName] = useState(runesData[0].name);
     const [targetTime, setTargetTime] = useState('30');
@@ -191,32 +178,24 @@ const TargetCalculator = () => {
 
 // --- Main Application Component ---
 export default function App() {
-  const [activeTab, setActiveTab] = useState('calculator'); // 'calculator' or 'whatif'
-  const [rateValue, setRateValue] = useState('1');
-  const [rateScale, setRateScale] = useState('M');
+  const [activeTab, setActiveTab] = useState('calculator');
+  const [rawRpsInput, setRawRpsInput] = useState('1M');
   const [hideInstant, setHideInstant] = useState(true);
   const [sortOrder, setSortOrder] = useState('asc');
   const [runeFilter, setRuneFilter] = useState('');
 
   // Load state from localStorage on initial render
   useEffect(() => {
-    const savedRateValue = localStorage.getItem('runeCalc_rateValue');
-    const savedRateScale = localStorage.getItem('runeCalc_rateScale');
-    if (savedRateValue) setRateValue(savedRateValue);
-    if (savedRateScale) setRateScale(savedRateScale);
+    const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
+    if (savedRps) setRawRpsInput(savedRps);
   }, []);
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('runeCalc_rateValue', rateValue);
-    localStorage.setItem('runeCalc_rateScale', rateScale);
-  }, [rateValue, rateScale]);
+    localStorage.setItem('runeCalc_rawRpsInput', rawRpsInput);
+  }, [rawRpsInput]);
 
-  const rps = useMemo(() => {
-    const num = parseFloat(rateValue) || 0;
-    const multiplier = scale[rateScale] || 1;
-    return num * multiplier;
-  }, [rateValue, rateScale]);
+  const rps = useMemo(() => parseRpsInput(rawRpsInput), [rawRpsInput]);
 
   const { processedRunes, nextUpgradeName } = useMemo(() => {
     let nextUpgrade = null;
@@ -275,9 +254,11 @@ export default function App() {
                     <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-4 sticky top-4 z-10">
                         <h3 className="text-xl font-bold text-center text-white mb-4">My Current Rate</h3>
                         <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <input type="number" value={rateValue} onChange={(e) => setRateValue(e.target.value)} className="w-full sm:w-2/5 bg-gray-700 text-white text-lg p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 1.5" />
-                            <FilterableDropdown value={rateScale} onChange={setRateScale} />
+                            <input type="text" value={rawRpsInput} onChange={(e) => setRawRpsInput(e.target.value)} className="w-full bg-gray-700 text-white text-lg p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 95QnVt" />
                         </div>
+                        <p className="text-center text-cyan-300 mt-4 text-lg">
+                            Parsed Rate: {formatNumber(rps)} RPS
+                        </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 mb-6 bg-gray-800/50 rounded-lg">
