@@ -58,24 +58,34 @@ const generateScaleMap = () => {
 
 const scale = generateScaleMap();
 const scaleEntries = Object.entries(scale).sort(([, a], [, b]) => b - a);
-// Create a sorted version for dropdowns that need it
-const sortedScale = Object.fromEntries(Object.entries(scale).sort(([, valA], [, valB]) => valA - valB));
-
 
 const runesData = [
-  { name: 'Bloom', source: 'Color Rune', chance: 7.5e9 }, { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10 },
-  { name: 'Superstar', source: '5M Beginner', chance: 2.5e10 }, { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10 },
-  { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11 }, { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11 },
-  { name: 'Mystery', source: 'Basic Rune', chance: 1e12 }, { name: 'Thorn', source: 'Nature Rune', chance: 1e13 },
-  { name: 'Divinity', source: '5M Royal', chance: 7.5e16 }, { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17 },
-  { name: 'Prosperity', source: '5M Royal', chance: 2.5e22 }, { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27 },
-  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32 }, { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42 },
-  { name: 'Gleam', source: 'Color Rune', chance: 1e47 }, { name: 'Shyft', source: 'Unspecified Source', chance: 7.5e55 },
-  { name: 'Overlord', source: '5M Beginner', chance: 5e58 }, { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60 },
-  { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73 }, { name: 'Immortality', source: '5M Royal', chance: 2e82 },
-  { name: 'Vanta', source: 'Color Rune', chance: 5e87 }, { name: 'Odyssey', source: '5M Royal', chance: 1.5e100 },
-  { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103 }, { name: 'Destiny', source: '5M Royal', chance: 5e121 },
-  { name: 'Squid', source: 'Nature Rune', chance: 1.5e130 }, { name: 'Array', source: 'Unspecified Source', chance: 1e135 },
+  { name: 'Bloom', source: 'Color Rune', chance: 7.5e9, stats: '1k Boost Spheres + Talent Upgrade (Prisms Talent Tree)' },
+  { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10, stats: 'Rune Luck (MAX x10) + Talent Upgrade (Prisms Talent Tree, Hidden from a big rock on right side)' },
+  { name: 'Superstar', source: '5M Beginner', chance: 2.5e10, stats: 'x1M Energy (MAX x1NoNg) + Talent Upgrade (Hall of Fame, Location on center between both Runes, Rune Clone)' },
+  { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10, stats: 'x1.05 Tickets (MAX x3) + Talent Upgrade (Realm 2, Hidden close of Cyro Rune on Right side from a floating island)' },
+  { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11, stats: 'x1.05 Rune Bulk (MAX x1.3) + Ticket Perk (Rune Luck)' },
+  { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11, stats: 'x25K Orbs (Exponential) | (MAX x1NoNg) + x1.25 Rune Luck (MAX x100) + x1.25 Rune Speed (MAX x100)' },
+  { name: 'Mystery', source: 'Basic Rune', chance: 1e12, stats: 'x1 Rune Bulk (MAX x5) + -0.1s RToken Cooldown (MAX -60s)' },
+  { name: 'Thorn', source: 'Nature Rune', chance: 1e13, stats: 'Ticket Perks Upgrade (Rune Bulk) + x1 Rune Speed (MAX x25k) + x2.5 Tickets (MAX x10B)' },
+  { name: 'Divinity', source: '5M Royal', chance: 7.5e16, stats: '+2 Rune Bulk (MAX +100k) + x1 Rune Luck (MAX x10)' },
+  { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)' },
+  { name: 'Prosperity', source: '5M Royal', chance: 2.5e22, stats: '-1 Chest Chance (MAX -1/6k) + x1.01 Rune Speed (MAX x100K)' },
+  { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27, stats: 'x1.02 Rune Luck (MAX x1M) + ^1 Rune Bulk (MAX ^1.3)' },
+  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade' },
+  { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42, stats: 'x1 Tickets (MAX x1SxDe)' },
+  { name: 'Gleam', source: 'Color Rune', chance: 1e47, stats: 'x1.01 Rune Speed (MAX x1K) + x1 Rune Bulk (MAX x10K)' },
+  { name: 'Shyft', source: 'Unspecified Source', chance: 7.5e55, stats: '+1 Walkspeed (MAX 30) +7 Rune Bulk (MAX +500k) + New Talent (Behind the Basic Rune on island)' },
+  { name: 'Overlord', source: '5M Beginner', chance: 5e58, stats: 'x1.01 Energy (EXPONENTIAL) + +24 Rune Bulk (MAX +100M)' },
+  { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60, stats: 'x1.01 Rune Speed (MAX 50k) + x1 Rune Speed (MAX 500k)' },
+  { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73, stats: 'x1.02 Rune Bulk (MAX x50k) + New Talent' },
+  { name: 'Immortality', source: '5M Royal', chance: 2e82, stats: 'x2 Rune Bulk (EXPODENTIAL) (MAX x1B)' },
+  { name: 'Vanta', source: 'Color Rune', chance: 5e87, stats: 'x2 Rune Speed (EXPODENTIAL) + x1 Rune Bulk (MAX ???) + x2 Tickets' },
+  { name: 'Odyssey', source: '5M Royal', chance: 1.5e100, stats: 'x1 Rune Bulk (EXPONENTIAL) + x1 Rune Bulk (MAX ???) + x1 Rune Speed (MAX ???)' },
+  { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103, stats: 'x1.01 Rune Speed (MAX x100k) + New Talent' },
+  { name: 'Destiny', source: '5M Royal', chance: 5e121, stats: 'x1 Rune Bullk (MAX x10K) + x1 Rune Speed (MAX ???)' },
+  { name: 'Squid', source: 'Nature Rune', chance: 1.5e130, stats: 'Ticket Perk (Rune Bulk) + x2 Rune Bulk (MAX ???) + x? Tickets (MAX ???)' },
+  { name: 'Array', source: 'Unspecified Source', chance: 1e135, stats: '+? Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets' },
 ];
 
 // --- Helper Functions ---
@@ -120,7 +130,6 @@ function parseRpsInput(input) {
     if (typeof input !== 'string' || !input) return 0;
     const cleanedInput = input.trim();
     
-    // Regex to find a number followed by letters
     const match = cleanedInput.match(/^(\d*\.?\d+)\s*([a-zA-Z]+)$/);
 
     if (match) {
@@ -133,7 +142,6 @@ function parseRpsInput(input) {
         }
     }
 
-    // If no scale is found or regex doesn't match, try parsing as a plain number
     const plainNumber = parseFloat(cleanedInput);
     return isNaN(plainNumber) ? 0 : plainNumber;
 }
@@ -184,13 +192,11 @@ export default function App() {
   const [sortOrder, setSortOrder] = useState('asc');
   const [runeFilter, setRuneFilter] = useState('');
 
-  // Load state from localStorage on initial render
   useEffect(() => {
     const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
     if (savedRps) setRawRpsInput(savedRps);
   }, []);
 
-  // Save state to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('runeCalc_rawRpsInput', rawRpsInput);
   }, [rawRpsInput]);
@@ -281,15 +287,19 @@ export default function App() {
                             return (
                             <div key={rune.name} className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border transition-all duration-300 ${highlightClass}`}>
                                 {isNextUpgrade && <div className="text-yellow-400 font-bold mb-2 text-sm">NEXT REASONABLE UPGRADE (&lt;1 hour)</div>}
-                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                                <div className="mb-3 sm:mb-0">
-                                    <h2 className="text-2xl font-bold text-white">{rune.name}</h2>
-                                    <p className="text-sm text-gray-400">{rune.source}</p>
-                                    <p className="text-sm text-cyan-400">{formatChance(rune.chance)}</p>
-                                </div>
-                                <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
-                                    {formatTime(rune.time)}
-                                </div>
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <h2 className="text-2xl font-bold text-white">{rune.name}</h2>
+                                        <p className="text-sm text-gray-400">{rune.source}</p>
+                                        <p className="text-sm text-cyan-400">{formatChance(rune.chance)}</p>
+                                        <p className="text-sm text-green-400 mt-2">
+                                            <strong className="font-semibold">Gives: </strong>
+                                            {rune.stats}
+                                        </p>
+                                    </div>
+                                    <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
+                                        {formatTime(rune.time)}
+                                    </div>
                                 </div>
                             </div>
                             );
