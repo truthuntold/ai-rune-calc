@@ -1,20 +1,18 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.5';
+const version = '1.0.8';
 
 const changelog = [
+    { version: '1.0.8', date: '2025-08-02', changes: ['Added Bolt and Zephyr runes.', 'Corrected chances for Triarch, Disarray, and Abyssium.', 'Fixed typos in stat descriptions.'] },
+    { version: '1.0.7', date: '2025-08-02', changes: ['Added the Triarch and Disarray runes.'] },
+    { version: '1.0.6', date: '2025-08-02', changes: ['Added a "What\'s New" notification banner that appears when the app is updated.'] },
     { version: '1.0.5', date: '2025-08-02', changes: ['Added case-sensitive handling for ambiguous number suffixes (e.g., Tqg vs TQg) with a user warning.'] },
     { version: '1.0.4', date: '2025-08-01', changes: ['Updated the sources for Hyper Finality, Shyft, Array, and Stray runes.'] },
     { version: '1.0.3', date: '2025-08-01', changes: ['Added the Stray rune.'] },
     { version: '1.0.2', date: '2025-08-01', changes: ['Added a clarifying line to note that times are for a single rune.'] },
     { version: '1.0.1', date: '2025-08-01', changes: ['Corrected the chance for the Vanta rune.'] },
     { version: '1.0.0', date: '2025-08-01', changes: ['Added versioning and a changelog.', 'Improved styling for rune descriptions.', 'Added a message to report incorrect values.', 'Made RPS input parsing case-insensitive.'] },
-    { version: '0.9.0', date: '2025-07-31', changes: ['Added rune stat descriptions to each entry.', 'Updated rune data and number scaling to the latest values.'] },
-    { version: '0.8.0', date: '2025-07-30', changes: ['Refactored the UI to use a tabbed interface.', 'Set "Hide Instant Runes" to be on by default.'] },
-    { version: '0.7.0', date: '2025-07-29', changes: ['Added a "What If?" Target Calculator.', 'Added a "Next Upgrade" highlight.', 'RPS input is now saved to local storage.', 'Added a text filter for the rune list.'] },
-    { version: '0.6.0', date: '2025-07-28', changes: ['Added scientific notation to all values.', 'Added sorting options.', 'Added a checkbox to hide instant runes.', 'The RPS scale dropdown is now a searchable input.'] },
-    { version: '0.5.0', date: '2025-07-27', changes: ['Initial public version of the Rune Calculator.'] },
 ];
 
 
@@ -102,7 +100,7 @@ const runesData = [
   { name: 'Mystery', source: 'Basic Rune', chance: 1e12, stats: 'x1 Rune Bulk (MAX x5) + -0.1s RToken Cooldown (MAX -60s)' },
   { name: 'Thorn', source: 'Nature Rune', chance: 1e13, stats: 'Ticket Perks Upgrade (Rune Bulk) + x1 Rune Speed (MAX x25k) + x2.5 Tickets (MAX x10B)' },
   { name: 'Divinity', source: '5M Royal', chance: 7.5e16, stats: '+2 Rune Bulk (MAX +100k) + x1 Rune Luck (MAX x10)' },
-  { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)' },
+  { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e20, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)' },
   { name: 'Prosperity', source: '5M Royal', chance: 2.5e22, stats: '-1 Chest Chance (MAX -1/6k) + x1.01 Rune Speed (MAX x100K)' },
   { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27, stats: 'x1.02 Rune Luck (MAX x1M) + ^1 Rune Bulk (MAX ^1.3)' },
   { name: 'Hyper Finality', source: 'Basic Rune', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade' },
@@ -112,7 +110,7 @@ const runesData = [
   { name: 'Overlord', source: '5M Beginner', chance: 5e58, stats: 'x1.01 Energy (EXPONENTIAL) + +24 Rune Bulk (MAX +100M)' },
   { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60, stats: 'x1.01 Rune Speed (MAX 50k) + x1 Rune Speed (MAX 500k)' },
   { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73, stats: 'x1.02 Rune Bulk (MAX x50k) + New Talent' },
-  { name: 'Immortality', source: '5M Royal', chance: 2e82, stats: 'x2 Rune Bulk (EXPODENTIAL) (MAX x1B)' },
+  { name: 'Immortality', source: '5M Royal', chance: 2e82, stats: 'x2 Rune Bulk (EXPONENTIAL) (MAX x1B)' },
   { name: 'Vanta', source: 'Color Rune', chance: 7e95, stats: 'x2 Rune Speed (EXPONENTIAL) + x1 Rune Bulk (MAX ???) + x2 Tickets' },
   { name: 'Odyssey', source: '5M Royal', chance: 1.5e109, stats: 'x1 Rune Bulk (EXPONENTIAL) + x1 Rune Bulk (MAX ???) + x1 Rune Speed (MAX ???)' },
   { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103, stats: 'x1.01 Rune Speed (MAX x100k) + New Talent' },
@@ -121,6 +119,10 @@ const runesData = [
   { name: 'Array', source: 'Basic Rune', chance: 1e135, stats: '+? Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets' },
   { name: 'Cyclone', source: 'Nature Rune', chance: 2.5e140, stats: '+^1.2 Rune Bulk + x1K Rune Speed + Talent Upgrade (T1 area on a hill)' },
   { name: 'Stray', source: 'Cryo Rune', chance: 1e160, stats: 'x1 Rune Speed [EXPONENTIAL] + x1 Tickets [EXPONENTIAL]' },
+  { name: 'Triarch', source: '5M Royal', chance: 1.5e165, stats: 'x1 rune speed + x1 rune speed + x1 rune speed' },
+  { name: 'Disarray', source: 'Basic Rune', chance: 7.5e174, stats: '+1 Rune bulk (EXPONENTIAL) + x1 Rune bulk' },
+  { name: 'Bolt', source: 'Nature Rune', chance: 1.75e182, stats: 'Stats not yet available.' },
+  { name: 'Zephyr', source: 'Polychrome Rune', chance: 5e191, stats: 'Stats not yet available.' },
 ];
 
 // --- Helper Functions ---
