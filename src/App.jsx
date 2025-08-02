@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.8';
+const version = '1.0.9';
 
 const changelog = [
+    { version: '1.0.9', date: '2025-08-02', changes: ['Re-implemented the "What\'s New" notification feature.'] },
     { version: '1.0.8', date: '2025-08-02', changes: ['Added Bolt and Zephyr runes.', 'Corrected chances for Triarch, Disarray, and Abyssium.', 'Fixed typos in stat descriptions.'] },
     { version: '1.0.7', date: '2025-08-02', changes: ['Added the Triarch and Disarray runes.'] },
     { version: '1.0.6', date: '2025-08-02', changes: ['Added a "What\'s New" notification banner that appears when the app is updated.'] },
@@ -66,6 +67,7 @@ const generateScaleMap = () => {
     'SxOgCe': 1e561, 'SpOgCe': 1e564, 'OcOgCe': 1e567, 'NoOgCe': 1e570, 'NgCe': 1e573, 'UNgCe': 1e576, 
     'DNgCe': 1e579, 'TNgCe': 1e582, 'QdNgCe': 1e585, 'QnNgCe': 1e588, 'SxNgCe': 1e591, 'SpNgCe': 1e594, 
     'OcNgCe': 1e597, 'NoNgCe': 1e600, 'Du': 1e603,
+    'SpQd': 1e39, // Custom combination
   };
   return scales;
 };
@@ -266,10 +268,17 @@ export default function App() {
   const [sortOrder, setSortOrder] = useState('asc');
   const [runeFilter, setRuneFilter] = useState('');
   const [isChangelogVisible, setIsChangelogVisible] = useState(false);
+  const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
   useEffect(() => {
     const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
     if (savedRps) setRawRpsInput(savedRps);
+
+    const lastVisitedVersion = localStorage.getItem('runeCalc_lastVisitedVersion');
+    if (lastVisitedVersion && lastVisitedVersion !== version) {
+        setShowUpdateNotification(true);
+    }
+    localStorage.setItem('runeCalc_lastVisitedVersion', version);
   }, []);
 
   useEffect(() => {
@@ -336,6 +345,23 @@ export default function App() {
         <div className="bg-gray-800 p-6 rounded-b-xl shadow-lg">
             {activeTab === 'calculator' && (
                 <div>
+                    {showUpdateNotification && (
+                        <div className="bg-blue-900/50 border border-blue-500/30 text-blue-300 text-center p-3 rounded-lg mb-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+                            <span>
+                                Updated to v{version}! 
+                                <button 
+                                    onClick={() => {
+                                        setIsChangelogVisible(true);
+                                        setShowUpdateNotification(false);
+                                    }} 
+                                    className="underline font-bold ml-2 hover:text-white"
+                                >
+                                    See what's new.
+                                </button>
+                            </span>
+                            <button onClick={() => setShowUpdateNotification(false)} className="text-blue-300 hover:text-white text-2xl leading-none px-2">&times;</button>
+                        </div>
+                    )}
                     <div className="bg-orange-900/50 border border-orange-500/30 text-orange-300 text-center p-3 rounded-lg mb-6">
                         Notice an incorrect chance? Message <strong className="font-bold">@LeftySix</strong> on Discord with the correct value!
                     </div>
