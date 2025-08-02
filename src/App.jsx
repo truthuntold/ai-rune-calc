@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.4';
+const version = '1.0.5';
 
 const changelog = [
+    { version: '1.0.5', date: '2025-08-02', changes: ['Added case-sensitive handling for ambiguous number suffixes (e.g., Tqg vs TQg) with a user warning.'] },
     { version: '1.0.4', date: '2025-08-01', changes: ['Updated the sources for Hyper Finality, Shyft, Array, and Stray runes.'] },
     { version: '1.0.3', date: '2025-08-01', changes: ['Added the Stray rune.'] },
     { version: '1.0.2', date: '2025-08-01', changes: ['Added a clarifying line to note that times are for a single rune.'] },
@@ -78,6 +79,18 @@ const lowerCaseScaleMap = Object.keys(scale).reduce((acc, key) => {
   return acc;
 }, {});
 
+// Find suffixes that are the same when lowercased but different otherwise
+const seenLowerCase = new Set();
+const conflictingLowerCaseSuffixes = new Set();
+for (const key of Object.keys(scale)) {
+    const lowerKey = key.toLowerCase();
+    if (seenLowerCase.has(lowerKey)) {
+        conflictingLowerCaseSuffixes.add(lowerKey);
+    } else {
+        seenLowerCase.add(lowerKey);
+    }
+}
+
 
 const runesData = [
   { name: 'Bloom', source: 'Color Rune', chance: 7.5e9, stats: '1k Boost Spheres + Talent Upgrade (Prisms Talent Tree)' },
@@ -144,28 +157,42 @@ function formatChance(chance) {
 }
 
 /**
- * Parses a string like "1.5M" or "100QdVt" into a number, case-insensitively.
+ * Parses a string like "1.5M" or "100QdVt" into a number, handling case-sensitivity for ambiguous suffixes.
  * @param {string} input - The string to parse.
- * @returns {number} The parsed numeric value.
+ * @returns {{value: number, warning: string|null}} The parsed numeric value and any warning.
  */
 function parseRpsInput(input) {
-    if (typeof input !== 'string' || !input) return 0;
+    if (typeof input !== 'string' || !input) return { value: 0, warning: null };
     const cleanedInput = input.trim();
     
-    const match = cleanedInput.match(/^(\d*\.?\d+)\s*([a-zA-Z]+)$/i);
+    const match = cleanedInput.match(/^(\d*\.?\d+)\s*([a-zA-Z]+)$/);
 
     if (match) {
         const numPart = parseFloat(match[1]);
-        const scalePart = match[2].toLowerCase();
-        const multiplier = lowerCaseScaleMap[scalePart];
+        const scalePart = match[2]; // Keep original case
 
+        // 1. Try case-sensitive match first
+        if (scale[scalePart]) {
+            return { value: numPart * scale[scalePart], warning: null };
+        }
+
+        // 2. If no direct match, check for ambiguity
+        const lowerScalePart = scalePart.toLowerCase();
+        if (conflictingLowerCaseSuffixes.has(lowerScalePart)) {
+            const options = Object.keys(scale).filter(k => k.toLowerCase() === lowerScalePart).join(', ');
+            const warningMessage = `Warning: '${scalePart}' is ambiguous. Use one of these case-sensitive options: ${options}.`;
+            return { value: 0, warning: warningMessage };
+        }
+
+        // 3. If not ambiguous, try case-insensitive match
+        const multiplier = lowerCaseScaleMap[lowerScalePart];
         if (multiplier) {
-            return numPart * multiplier;
+            return { value: numPart * multiplier, warning: null };
         }
     }
 
     const plainNumber = parseFloat(cleanedInput);
-    return isNaN(plainNumber) ? 0 : plainNumber;
+    return isNaN(plainNumber) ? { value: 0, warning: null } : { value: plainNumber, warning: null };
 }
 
 
@@ -247,7 +274,10 @@ export default function App() {
     localStorage.setItem('runeCalc_rawRpsInput', rawRpsInput);
   }, [rawRpsInput]);
 
-  const rps = useMemo(() => parseRpsInput(rawRpsInput), [rawRpsInput]);
+  const { rps, rpsWarning } = useMemo(() => {
+      const { value, warning } = parseRpsInput(rawRpsInput);
+      return { rps: value, rpsWarning: warning };
+  }, [rawRpsInput]);
 
   const { processedRunes, nextUpgradeName } = useMemo(() => {
     let nextUpgrade = null;
@@ -313,13 +343,18 @@ export default function App() {
                         <div className="flex flex-col sm:flex-row items-center gap-4">
                             <input type="text" value={rawRpsInput} onChange={(e) => setRawRpsInput(e.target.value)} className="w-full bg-gray-700 text-white text-lg p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 95QnVt" />
                         </div>
+                        {rpsWarning && (
+                            <div className="text-center bg-yellow-900/50 border border-yellow-500/30 text-yellow-300 p-3 mt-4 rounded-lg">
+                                {rpsWarning}
+                            </div>
+                        )}
                         <p className="text-center text-cyan-300 mt-4 text-lg">
                             Parsed Rate: {formatNumber(rps)} RPS
                         </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 mb-6 bg-gray-800/50 rounded-lg">
-                        <input type="text" value={runeFilter} onChange={e => setRune-filter(e.target.value)} placeholder="Filter runes by name..." className="w-full sm:w-auto bg-gray-700 text-white p-2 rounded-lg border-2 border-gray-600 focus:border-cyan-500" />
+                        <input type="text" value={runeFilter} onChange={e => setRuneFilter(e.target.value)} placeholder="Filter runes by name..." className="w-full sm:w-auto bg-gray-700 text-white p-2 rounded-lg border-2 border-gray-600 focus:border-cyan-500" />
                         <div className="flex items-center gap-3">
                             <input type="checkbox" id="hide-instant" checked={hideInstant} onChange={(e) => setHideInstant(e.target.checked)} className="h-5 w-5 rounded bg-gray-700 border-gray-500 text-cyan-500 focus:ring-cyan-600" />
                             <label htmlFor="hide-instant" className="text-white">Hide Instant</label>
