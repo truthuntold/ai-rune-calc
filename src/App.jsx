@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.2';
+const version = '1.0.4';
 
 const changelog = [
+    { version: '1.0.4', date: '2025-08-01', changes: ['Updated the sources for Hyper Finality, Shyft, Array, and Stray runes.'] },
+    { version: '1.0.3', date: '2025-08-01', changes: ['Added the Stray rune.'] },
     { version: '1.0.2', date: '2025-08-01', changes: ['Added a clarifying line to note that times are for a single rune.'] },
     { version: '1.0.1', date: '2025-08-01', changes: ['Corrected the chance for the Vanta rune.'] },
     { version: '1.0.0', date: '2025-08-01', changes: ['Added versioning and a changelog.', 'Improved styling for rune descriptions.', 'Added a message to report incorrect values.', 'Made RPS input parsing case-insensitive.'] },
@@ -90,10 +92,10 @@ const runesData = [
   { name: 'Abbysium', source: 'Polychrome Rune', chance: 1.25e17, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)' },
   { name: 'Prosperity', source: '5M Royal', chance: 2.5e22, stats: '-1 Chest Chance (MAX -1/6k) + x1.01 Rune Speed (MAX x100K)' },
   { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27, stats: 'x1.02 Rune Luck (MAX x1M) + ^1 Rune Bulk (MAX ^1.3)' },
-  { name: 'Hyper Finality', source: 'Unspecified Source', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade' },
+  { name: 'Hyper Finality', source: 'Basic Rune', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade' },
   { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42, stats: 'x1 Tickets (MAX x1SxDe)' },
   { name: 'Gleam', source: 'Color Rune', chance: 1e47, stats: 'x1.01 Rune Speed (MAX x1K) + x1 Rune Bulk (MAX x10K)' },
-  { name: 'Shyft', source: 'Unspecified Source', chance: 7.5e55, stats: '+1 Walkspeed (MAX 30) +7 Rune Bulk (MAX +500k) + New Talent (Behind the Basic Rune on island)' },
+  { name: 'Shyft', source: 'Basic Rune', chance: 7.5e55, stats: '+1 Walkspeed (MAX 30) +7 Rune Bulk (MAX +500k) + New Talent (Behind the Basic Rune on island)' },
   { name: 'Overlord', source: '5M Beginner', chance: 5e58, stats: 'x1.01 Energy (EXPONENTIAL) + +24 Rune Bulk (MAX +100M)' },
   { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60, stats: 'x1.01 Rune Speed (MAX 50k) + x1 Rune Speed (MAX 500k)' },
   { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73, stats: 'x1.02 Rune Bulk (MAX x50k) + New Talent' },
@@ -103,8 +105,9 @@ const runesData = [
   { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103, stats: 'x1.01 Rune Speed (MAX x100k) + New Talent' },
   { name: 'Destiny', source: '5M Royal', chance: 5e121, stats: 'x1 Rune Bullk (MAX x10K) + x1 Rune Speed (MAX ???)' },
   { name: 'Squid', source: 'Nature Rune', chance: 1.5e130, stats: 'Ticket Perk (Rune Bulk) + x2 Rune Bulk (MAX ???) + x? Tickets (MAX ???)' },
-  { name: 'Array', source: 'Unspecified Source', chance: 1e135, stats: '+? Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets' },
+  { name: 'Array', source: 'Basic Rune', chance: 1e135, stats: '+? Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets' },
   { name: 'Cyclone', source: 'Nature Rune', chance: 2.5e140, stats: '+^1.2 Rune Bulk + x1K Rune Speed + Talent Upgrade (T1 area on a hill)' },
+  { name: 'Stray', source: 'Cryo Rune', chance: 1e160, stats: 'x1 Rune Speed [EXPONENTIAL] + x1 Tickets [EXPONENTIAL]' },
 ];
 
 // --- Helper Functions ---
@@ -316,7 +319,7 @@ export default function App() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 mb-6 bg-gray-800/50 rounded-lg">
-                        <input type="text" value={runeFilter} onChange={e => setRuneFilter(e.target.value)} placeholder="Filter runes by name..." className="w-full sm:w-auto bg-gray-700 text-white p-2 rounded-lg border-2 border-gray-600 focus:border-cyan-500" />
+                        <input type="text" value={runeFilter} onChange={e => setRune-filter(e.target.value)} placeholder="Filter runes by name..." className="w-full sm:w-auto bg-gray-700 text-white p-2 rounded-lg border-2 border-gray-600 focus:border-cyan-500" />
                         <div className="flex items-center gap-3">
                             <input type="checkbox" id="hide-instant" checked={hideInstant} onChange={(e) => setHideInstant(e.target.checked)} className="h-5 w-5 rounded bg-gray-700 border-gray-500 text-cyan-500 focus:ring-cyan-600" />
                             <label htmlFor="hide-instant" className="text-white">Hide Instant</label>
