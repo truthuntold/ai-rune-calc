@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.9';
+const version = '1.0.10';
 
 const changelog = [
+    { version: '1.0.10', date: '2025-08-02', changes: ['Updated stats for Bolt and Zephyr runes.'] },
     { version: '1.0.9', date: '2025-08-02', changes: ['Re-implemented the "What\'s New" notification feature.'] },
     { version: '1.0.8', date: '2025-08-02', changes: ['Added Bolt and Zephyr runes.', 'Corrected chances for Triarch, Disarray, and Abyssium.', 'Fixed typos in stat descriptions.'] },
     { version: '1.0.7', date: '2025-08-02', changes: ['Added the Triarch and Disarray runes.'] },
@@ -123,8 +124,8 @@ const runesData = [
   { name: 'Stray', source: 'Cryo Rune', chance: 1e160, stats: 'x1 Rune Speed [EXPONENTIAL] + x1 Tickets [EXPONENTIAL]' },
   { name: 'Triarch', source: '5M Royal', chance: 1.5e165, stats: 'x1 rune speed + x1 rune speed + x1 rune speed' },
   { name: 'Disarray', source: 'Basic Rune', chance: 7.5e174, stats: '+1 Rune bulk (EXPONENTIAL) + x1 Rune bulk' },
-  { name: 'Bolt', source: 'Nature Rune', chance: 1.75e182, stats: 'Stats not yet available.' },
-  { name: 'Zephyr', source: 'Polychrome Rune', chance: 5e191, stats: 'Stats not yet available.' },
+  { name: 'Bolt', source: 'Nature Rune', chance: 1.75e182, stats: 'x1 Rune Bulk (MAX x100) + x1 Rune Bulk (MAX x250) + New Talent' },
+  { name: 'Zephyr', source: 'Polychrome Rune', chance: 5e191, stats: 'x1 Rune Bulk (DUAL EXPONENTIAL) + x1.01 Rune Speed' },
 ];
 
 // --- Helper Functions ---
