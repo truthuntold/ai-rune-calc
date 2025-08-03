@@ -430,9 +430,6 @@ export default function App() {
                                     <button onClick={() => setShowUpdateNotification(false)} className="text-blue-300 hover:text-white text-2xl leading-none px-2">&times;</button>
                                 </div>
                             )}
-                            <div className="bg-orange-900/50 border border-orange-500/30 text-orange-300 text-center p-3 rounded-lg mb-6">
-                                Notice an incorrect chance? Message <strong className="font-bold">@LeftySix</strong> on Discord with the correct value!
-                            </div>
 
                             <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-4 sticky top-4 z-10">
                                 <h3 className="text-xl font-bold text-center text-white mb-4">My Current Rate</h3>
