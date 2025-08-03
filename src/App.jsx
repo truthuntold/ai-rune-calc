@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.10';
+const version = '1.0.11';
+const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.11', date: '2025-08-03', changes: ['Added a prominent link to the comprehensive Google Docs guide.', 'Clarified the "Next Upgrade" text to be more intuitive.', 'Updated note links to be functional.'] },
     { version: '1.0.10', date: '2025-08-02', changes: ['Updated stats for Bolt and Zephyr runes.'] },
     { version: '1.0.9', date: '2025-08-02', changes: ['Re-implemented the "What\'s New" notification feature.'] },
     { version: '1.0.8', date: '2025-08-02', changes: ['Added Bolt and Zephyr runes.', 'Corrected chances for Triarch, Disarray, and Abyssium.', 'Fixed typos in stat descriptions.'] },
@@ -99,14 +101,14 @@ const runesData = [
     { name: 'Superstar', source: '5M Beginner', chance: 2.5e10, stats: 'x1M Energy (MAX x1NoNg) + Talent Upgrade (Hall of Fame, Location on center between both Runes, Rune Clone)' },
     { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10, stats: 'x1.05 Tickets (MAX x3) + Talent Upgrade (Realm 2, Hidden close of Cyro Rune on Right side from a floating island)' },
     { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11, stats: 'x1.05 Rune Bulk (MAX x1.3) + Ticket Perk (Rune Luck)' },
-    { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11, stats: 'x25K Orbs (Exponential) | (MAX x1NoNg) + x1.25 Rune Luck (MAX x100) + x1.25 Rune Speed (MAX x100)' },
-    { name: 'Mystery', source: 'Basic Rune', chance: 1e12, stats: 'x1 Rune Bulk (MAX x5) + -0.1s RToken Cooldown (MAX -60s)' },
-    { name: 'Thorn', source: 'Nature Rune', chance: 1e13, stats: 'Ticket Perks Upgrade (Rune Bulk) + x1 Rune Speed (MAX x25k) + x2.5 Tickets (MAX x10B)' },
-    { name: 'Divinity', source: '5M Royal', chance: 7.5e16, stats: '+2 Rune Bulk (MAX +100k) + x1 Rune Luck (MAX x10)' },
-    { name: 'Abyssium', source: 'Polychrome Rune', chance: 1.25e20, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)' },
+    { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11, stats: 'x25K Orbs (Exponential) | (MAX x1NoNg) + x1.25 Rune Luck (MAX x100) + x1.25 Rune Speed (MAX x100)', note: 'The <GUIDE> suggests alternating between grinding for Kingslayer, Mystery, and Thorn.' },
+    { name: 'Mystery', source: 'Basic Rune', chance: 1e12, stats: 'x1 Rune Bulk (MAX x5) + -0.1s RToken Cooldown (MAX -60s)', note: 'When grinding actively, this can be alternated with Kingslayer and Thorn.' },
+    { name: 'Thorn', source: 'Nature Rune', chance: 1e13, stats: 'Ticket Perks Upgrade (Rune Bulk) + x1 Rune Speed (MAX x25k) + x2.5 Tickets (MAX x10B)', note: 'When grinding actively, this can be alternated with Kingslayer and Mystery.' },
+    { name: 'Divinity', source: '5M Royal', chance: 7.5e16, stats: '+2 Rune Bulk (MAX +100k) + x1 Rune Luck (MAX x10)', note: 'The <GUIDE> suggests alternating between grinding for Divinity and Abyssium until both are maxed.' },
+    { name: 'Abyssium', source: 'Polychrome Rune', chance: 1.25e20, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)', note: 'The <GUIDE> suggests alternating between grinding for Abyssium and Divinity until both are maxed.' },
     { name: 'Prosperity', source: '5M Royal', chance: 2.5e22, stats: '-1 Chest Chance (MAX -1/6k) + x1.01 Rune Speed (MAX x100K)' },
     { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27, stats: 'x1.02 Rune Luck (MAX x1M) + ^1 Rune Bulk (MAX ^1.3)' },
-    { name: 'Hyper Finality', source: 'Basic Rune', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade' },
+    { name: 'Hyper Finality', source: 'Basic Rune', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade', note: 'IMPORTANT: The <GUIDE> recommends turning OFF Rune Luck when grinding for this rune to focus your progress.' },
     { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42, stats: 'x1 Tickets (MAX x1SxDe)' },
     { name: 'Gleam', source: 'Color Rune', chance: 1e47, stats: 'x1.01 Rune Speed (MAX x1K) + x1 Rune Bulk (MAX x10K)' },
     { name: 'Shyft', source: 'Basic Rune', chance: 7.5e55, stats: '+1 Walkspeed (MAX 30) +7 Rune Bulk (MAX +500k) + New Talent (Behind the Basic Rune on island)' },
@@ -118,8 +120,8 @@ const runesData = [
     { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103, stats: 'x1.01 Rune Speed (MAX x100k) + New Talent' },
     { name: 'Odyssey', source: '5M Royal', chance: 1.5e109, stats: 'x1 Rune Bulk (EXPONENTIAL) + x1 Rune Bulk (MAX ???) + x1 Rune Speed (MAX ???)' },
     { name: 'Destiny', source: '5M Royal', chance: 5e121, stats: 'x1 Rune Bulk (MAX x10K) + x1 Rune Speed (MAX x250)' },
-    { name: 'Squid', source: 'Nature Rune', chance: 1.5e130, stats: 'Ticket Perk (Rune Bulk) + x2 Rune Bulk (MAX ???) + x? Tickets (MAX ???)' },
-    { name: 'Array', source: 'Basic Rune', chance: 1e135, stats: '+3.5k Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets' },
+    { name: 'Squid', source: 'Nature Rune', chance: 1.5e130, stats: 'Ticket Perk (Rune Bulk) + x2 Rune Bulk (MAX ???) + x? Tickets (MAX ???)', note: 'The <GUIDE> suggests alternating between grinding for Squid and Array.' },
+    { name: 'Array', source: 'Basic Rune', chance: 1e135, stats: '+3.5k Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets', note: 'The <GUIDE> suggests alternating between grinding for Array and Squid.' },
     { name: 'Cyclone', source: 'Nature Rune', chance: 2.5e140, stats: '^1.2 Rune Bulk + x1K Rune Speed + Talent Upgrade (T1 area on a hill)' },
     { name: 'Stray', source: 'Cryo Rune', chance: 1e160, stats: 'x1 Rune Speed [EXPONENTIAL] + x1 Tickets [EXPONENTIAL]' },
     { name: 'Triarch', source: '5M Royal', chance: 1.5e165, stats: 'x1 Rune Speed + x1 Rune Speed + x1 Rune Speed' },
@@ -202,6 +204,36 @@ function parseRpsInput(input) {
 
 
 // --- Custom Components ---
+const StrategyNote = ({ note }) => {
+    if (!note) return null;
+
+    const parts = note.split('<GUIDE>');
+
+    return (
+        <div className="bg-yellow-900/40 border border-yellow-500/30 text-yellow-300 text-sm p-3 mt-3 rounded-lg flex items-start gap-3">
+            <span className="text-lg leading-none mt-0.5">💡</span>
+            <p>
+                <strong className="font-bold text-yellow-200">Strategy Tip:</strong>{' '}
+                {parts.map((part, index) => (
+                    <React.Fragment key={index}>
+                        {part}
+                        {index < parts.length - 1 && (
+                            <a
+                                href={guideLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline font-semibold text-yellow-200 hover:text-cyan-300 transition-colors"
+                            >
+                                guide
+                            </a>
+                        )}
+                    </React.Fragment>
+                ))}
+            </p>
+        </div>
+    );
+};
+
 const TargetCalculator = () => {
     const [targetRuneName, setTargetRuneName] = useState(runesData[0].name);
     const [targetTime, setTargetTime] = useState('30');
@@ -318,8 +350,8 @@ export default function App() {
             <button
                 onClick={() => setActiveTab(tabName)}
                 className={`px-6 py-3 text-lg font-bold rounded-t-lg transition-colors duration-300 ${isActive
-                        ? 'bg-gray-800 text-cyan-400'
-                        : 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
+                    ? 'bg-gray-800 text-cyan-400'
+                    : 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
                     }`}
             >
                 {label}
@@ -335,6 +367,15 @@ export default function App() {
                 <header className="text-center mb-8">
                     <h1 className="text-4xl sm:text-5xl font-bold text-cyan-400 mb-2">Rune Time Calculator</h1>
                     <p className="text-lg text-gray-400">A strategic tool for planning your progression. Times shown are for a single rune. <span className="text-xs text-gray-500">v{version}</span></p>
+                    <div className="bg-blue-900/50 border border-blue-500/30 text-blue-300 text-center p-3 rounded-lg mt-6 max-w-xl mx-auto">
+                        <p>
+                            🚀 For a wealth of extra info, check out the{' '}
+                            <a href={guideLink} target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-white">
+                                Comprehensive Google Doc
+                            </a>
+                            !
+                        </p>
+                    </div>
                 </header>
 
                 <div className="flex border-b border-gray-700 mb-0">
@@ -400,7 +441,7 @@ export default function App() {
 
                                     return (
                                         <div key={rune.name} className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border transition-all duration-300 ${highlightClass}`}>
-                                            {isNextUpgrade && <div className="text-yellow-400 font-bold mb-2 text-sm">NEXT REASONABLE UPGRADE (&lt;1 hour)</div>}
+                                            {isNextUpgrade && <div className="text-yellow-400 font-bold mb-2 text-sm">Next Target (&lt; 1 Hour)</div>}
                                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                                 <div className="flex-1 min-w-0">
                                                     <h2 className="text-2xl font-bold text-white">{rune.name}</h2>
@@ -410,6 +451,7 @@ export default function App() {
                                                         <strong className="font-semibold">Gives: </strong>
                                                         {rune.stats}
                                                     </p>
+                                                    <StrategyNote note={rune.note} />
                                                 </div>
                                                 <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
                                                     {formatTime(rune.time)}
