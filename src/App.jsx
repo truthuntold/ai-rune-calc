@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.13';
+const version = '1.0.14';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.14', date: '2025-08-03', changes: ['Redesigned the custom rune calculator to be more distinct and less confusing for new players.', 'Added more explanatory text for its purpose.'] },
     { version: '1.0.13', date: '2025-08-03', changes: ['Enhanced the custom rune input to act as a two-way converter between short-form and scientific notation.'] },
     { version: '1.0.12', date: '2025-08-03', changes: ['Added a custom rune calculator for unlisted or new runes.'] },
     { version: '1.0.11', date: '2025-08-03', changes: ['Added a prominent link to the comprehensive Google Docs guide.', 'Clarified the "Next Upgrade" text to be more intuitive.', 'Updated note links to be functional.'] },
@@ -460,18 +461,19 @@ export default function App() {
                                 </select>
                             </div>
 
-                            <div className="bg-purple-900/50 border border-purple-500/30 text-purple-300 text-center p-3 rounded-lg mb-4">
-                                <p>LeftySix is too slow to add the new runes so he made this custom box for me.</p>
+                            <div className="bg-purple-900/50 border border-purple-500/30 text-purple-300 text-center p-3 rounded-lg mb-4 space-y-2">
+                                <p className="font-bold">LeftySix is too slow to add new runes, so he made this custom box for me.</p>
+                                <p className="text-sm text-purple-200">This is a stop-gap for calculating times for new or unlisted runes. <strong className="font-semibold">This is NOT a real rune in the game.</strong></p>
                             </div>
 
                             <div className="space-y-4">
-                                <div className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border border-purple-500/50`}>
+                                <div className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border-2 border-dashed border-purple-500/50`}>
                                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                         <div className="flex-1 min-w-0">
-                                            <h2 className="text-2xl font-bold text-white">Meme Rune</h2>
-                                            <p className="text-sm text-gray-400">Super Secret Rune of Mine</p>
-                                            <div className="text-sm text-cyan-400 mt-1 flex items-center gap-2 flex-wrap">
-                                                <span>1 / </span>
+                                            <h2 className="text-2xl font-bold text-white">Custom Rune Calculator</h2>
+                                            <p className="text-sm text-gray-400">Your Custom Input</p>
+                                            <div className="text-sm text-cyan-400 mt-2 flex items-center gap-2 flex-wrap">
+                                                <span>Chance: 1 / </span>
                                                 <input
                                                     type="text"
                                                     value={customRuneChance}
@@ -481,10 +483,6 @@ export default function App() {
                                                 />
                                                 <span className="text-gray-400 text-xs">{customRuneConversion}</span>
                                             </div>
-                                            <p className="text-sm text-green-400 mt-2">
-                                                <strong className="font-semibold">Gives: </strong>
-                                                +100% Clout, x5 Awesomeness (Max ∞)
-                                            </p>
                                         </div>
                                         <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
                                             {formatTime(customRuneDetails.time)}
