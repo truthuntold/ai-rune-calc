@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.11';
+const version = '1.0.12';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.12', date: '2025-08-03', changes: ['Added a custom rune calculator for unlisted or new runes.'] },
     { version: '1.0.11', date: '2025-08-03', changes: ['Added a prominent link to the comprehensive Google Docs guide.', 'Clarified the "Next Upgrade" text to be more intuitive.', 'Updated note links to be functional.'] },
     { version: '1.0.10', date: '2025-08-02', changes: ['Updated stats for Bolt and Zephyr runes.'] },
     { version: '1.0.9', date: '2025-08-02', changes: ['Re-implemented the "What\'s New" notification feature.'] },
@@ -300,6 +301,7 @@ export default function App() {
     const [hideInstant, setHideInstant] = useState(true);
     const [sortOrder, setSortOrder] = useState('asc');
     const [runeFilter, setRuneFilter] = useState('');
+    const [customRuneChance, setCustomRuneChance] = useState('1e300');
     const [isChangelogVisible, setIsChangelogVisible] = useState(false);
     const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
@@ -322,6 +324,12 @@ export default function App() {
         const { value, warning } = parseRpsInput(rawRpsInput);
         return { rps: value, rpsWarning: warning };
     }, [rawRpsInput]);
+
+    const customRuneDetails = useMemo(() => {
+        const { value: parsedChance } = parseRpsInput(customRuneChance);
+        const time = rps > 0 ? parsedChance / rps : Infinity;
+        return { parsedChance, time };
+    }, [customRuneChance, rps]);
 
     const { processedRunes, nextUpgradeName } = useMemo(() => {
         let nextUpgrade = null;
@@ -434,7 +442,37 @@ export default function App() {
                                 </select>
                             </div>
 
+                            <div className="bg-purple-900/50 border border-purple-500/30 text-purple-300 text-center p-3 rounded-lg mb-4">
+                                <p>LeftySix is too slow to add the new runes so he made this custom box for me.</p>
+                            </div>
+
                             <div className="space-y-4">
+                                <div className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border border-purple-500/50`}>
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <h2 className="text-2xl font-bold text-white">Meme Rune</h2>
+                                            <p className="text-sm text-gray-400">Super Secret Rune of Mine</p>
+                                            <div className="text-sm text-cyan-400 mt-1 flex items-center gap-2">
+                                                <span>1 / </span>
+                                                <input
+                                                    type="text"
+                                                    value={customRuneChance}
+                                                    onChange={(e) => setCustomRuneChance(e.target.value)}
+                                                    className="bg-gray-700/80 text-white p-1 rounded-md border border-gray-600 focus:border-cyan-500 w-32"
+                                                    placeholder="e.g., 1e300"
+                                                />
+                                            </div>
+                                            <p className="text-sm text-green-400 mt-2">
+                                                <strong className="font-semibold">Gives: </strong>
+                                                +100% Clout, x5 Awesomeness (Max ∞)
+                                            </p>
+                                        </div>
+                                        <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
+                                            {formatTime(customRuneDetails.time)}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {processedRunes.map((rune) => {
                                     const isNextUpgrade = rune.name === nextUpgradeName;
                                     const highlightClass = isNextUpgrade ? 'border-yellow-400 shadow-yellow-400/20 shadow-lg' : 'border-gray-700';
