@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.12';
+const version = '1.0.13';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.13', date: '2025-08-03', changes: ['Enhanced the custom rune input to act as a two-way converter between short-form and scientific notation.'] },
     { version: '1.0.12', date: '2025-08-03', changes: ['Added a custom rune calculator for unlisted or new runes.'] },
     { version: '1.0.11', date: '2025-08-03', changes: ['Added a prominent link to the comprehensive Google Docs guide.', 'Clarified the "Next Upgrade" text to be more intuitive.', 'Updated note links to be functional.'] },
     { version: '1.0.10', date: '2025-08-02', changes: ['Updated stats for Bolt and Zephyr runes.'] },
@@ -331,6 +332,23 @@ export default function App() {
         return { parsedChance, time };
     }, [customRuneChance, rps]);
 
+    const customRuneConversion = useMemo(() => {
+        const input = customRuneChance.trim();
+        if (!input) return '';
+
+        const isScientific = /e[+-]?\d/i.test(input);
+
+        if (isScientific) {
+            const num = parseFloat(input);
+            if (isNaN(num)) return '';
+            return `(${formatNumber(num)})`;
+        } else {
+            const { value: parsedValue } = parseRpsInput(input);
+            if (parsedValue === 0 || !isFinite(parsedValue) || String(parsedValue) === input) return '';
+            return `(${parsedValue.toExponential()})`;
+        }
+    }, [customRuneChance]);
+
     const { processedRunes, nextUpgradeName } = useMemo(() => {
         let nextUpgrade = null;
         const filtered = runesData
@@ -452,7 +470,7 @@ export default function App() {
                                         <div className="flex-1 min-w-0">
                                             <h2 className="text-2xl font-bold text-white">Meme Rune</h2>
                                             <p className="text-sm text-gray-400">Super Secret Rune of Mine</p>
-                                            <div className="text-sm text-cyan-400 mt-1 flex items-center gap-2">
+                                            <div className="text-sm text-cyan-400 mt-1 flex items-center gap-2 flex-wrap">
                                                 <span>1 / </span>
                                                 <input
                                                     type="text"
@@ -461,6 +479,7 @@ export default function App() {
                                                     className="bg-gray-700/80 text-white p-1 rounded-md border border-gray-600 focus:border-cyan-500 w-32"
                                                     placeholder="e.g., 1e300"
                                                 />
+                                                <span className="text-gray-400 text-xs">{customRuneConversion}</span>
                                             </div>
                                             <p className="text-sm text-green-400 mt-2">
                                                 <strong className="font-semibold">Gives: </strong>
