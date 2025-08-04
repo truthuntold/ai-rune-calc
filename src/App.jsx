@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.14';
+const version = '1.0.15';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.15', date: '2025-08-03', changes: ['Added Whirl and Riptide runes.'] },
     { version: '1.0.14', date: '2025-08-03', changes: ['Redesigned the custom rune calculator to be more distinct and less confusing for new players.', 'Added more explanatory text for its purpose.'] },
     { version: '1.0.13', date: '2025-08-03', changes: ['Enhanced the custom rune input to act as a two-way converter between short-form and scientific notation.'] },
     { version: '1.0.12', date: '2025-08-03', changes: ['Added a custom rune calculator for unlisted or new runes.'] },
@@ -131,6 +132,8 @@ const runesData = [
     { name: 'Disarray', source: 'Basic Rune', chance: 7.5e174, stats: '+1 Rune Bulk (EXPONENTIAL) (MAX +1T) + x1 Rune Bulk (MAX x250)' },
     { name: 'Bolt', source: 'Nature Rune', chance: 1.75e182, stats: 'x1 Rune Bulk (MAX x100) + x1 Rune Bulk (MAX x250) + New Talent' },
     { name: 'Zephyr', source: 'Polychrome Rune', chance: 5e191, stats: 'x1 Rune Bulk (DUAL EXPONENTIAL) + x1.01 Rune Speed' },
+    { name: 'Whirl', source: 'Color Rune', chance: 1e204, stats: 'x1 Rune Speed + x1 Tickets' },
+    { name: 'Riptide', source: 'Nature Rune', chance: 1.5e205, stats: 'x1.01 Rune Speed + x1 Rune Speed + x1 Tickets [EXPONENTIAL]' },
 ];
 
 // --- Helper Functions ---
