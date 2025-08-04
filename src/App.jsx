@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.15';
+const version = '1.0.16';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.16', date: '2025-08-04', changes: ['Added Cosmic Dust, Star, Apex, Constellation, and Torrent runes.'] },
     { version: '1.0.15', date: '2025-08-03', changes: ['Added Whirl and Riptide runes.'] },
     { version: '1.0.14', date: '2025-08-03', changes: ['Redesigned the custom rune calculator to be more distinct and less confusing for new players.', 'Added more explanatory text for its purpose.'] },
     { version: '1.0.13', date: '2025-08-03', changes: ['Enhanced the custom rune input to act as a two-way converter between short-form and scientific notation.'] },
@@ -67,7 +68,7 @@ const generateScaleMap = () => {
         'QdqgCe': 1e435, 'QnqgCe': 1e438, 'SxqgCe': 1e441, 'SpqgCe': 1e444, 'OcqgCe': 1e447, 'NoqgCe': 1e450,
         'QgCe': 1e453, 'UQgCe': 1e456, 'DQgCe': 1e459, 'TQgCe': 1e462, 'QdQgCe': 1e465, 'QnQgCe': 1e468,
         'SxQgCe': 1e471, 'SpQgCe': 1e474, 'OcQgCe': 1e477, 'NoQgCe': 1e480, 'sgCe': 1e483, 'UsgCe': 1e486,
-        'DsgCe': 1e489, 'TsgCe': 1e492, 'QdsgCe': 1e495, 'QnsgCe': 1e498, 'SxsgCe': 1e501, 'SpsgCe': 1e504,
+        'DsgCe': 1e489, 'TsgCe': 1e492, 'QdsgCe': 1e495, 'QnsgCe': 1e498, 'SxsgCe': 1e501, 'SpsgCe': 1e204,
         'OcsgCe': 1e507, 'NosgCe': 1e510, 'SgCe': 1e513, 'USgCe': 1e516, 'DSgCe': 1e519, 'TSgCe': 1e522,
         'QdSgCe': 1e525, 'QnSgCe': 1e528, 'SxSgCe': 1e531, 'SpSgCe': 1e534, 'OcSgCe': 1e537, 'NoSgCe': 1e540,
         'OgCe': 1e543, 'UOgCe': 1e546, 'DOgCe': 1e549, 'TOgCe': 1e552, 'QdOgCe': 1e555, 'QnOgCe': 1e558,
@@ -132,8 +133,13 @@ const runesData = [
     { name: 'Disarray', source: 'Basic Rune', chance: 7.5e174, stats: '+1 Rune Bulk (EXPONENTIAL) (MAX +1T) + x1 Rune Bulk (MAX x250)' },
     { name: 'Bolt', source: 'Nature Rune', chance: 1.75e182, stats: 'x1 Rune Bulk (MAX x100) + x1 Rune Bulk (MAX x250) + New Talent' },
     { name: 'Zephyr', source: 'Polychrome Rune', chance: 5e191, stats: 'x1 Rune Bulk (DUAL EXPONENTIAL) + x1.01 Rune Speed' },
-    { name: 'Whirl', source: 'Color Rune', chance: 1e204, stats: 'x1 Rune Speed + x1 Tickets' },
-    { name: 'Riptide', source: 'Nature Rune', chance: 1.5e205, stats: 'x1.01 Rune Speed + x1 Rune Speed + x1 Tickets [EXPONENTIAL]' },
+    { name: 'Whirl', source: 'Unknown', chance: 1e204, stats: 'x1 Rune Speed + x1 Tickets' },
+    { name: 'Riptide', source: 'Unknown', chance: 1.5e205, stats: 'x1.01 Rune Speed + x1 Rune Speed + x1 Tickets [EXPONENTIAL]' },
+    { name: 'Cosmic Dust', source: 'Galactic Rune', chance: 1e207, stats: '+ x1 Tickets (MAX ???) + x1 Rune Speed (MAX ???)' },
+    { name: 'Star', source: 'Galactic Rune', chance: 2.5e208, stats: '+ x1 Tickets (MAX ???) + x1 Rune Speed (MAX ???) [BOTH EXPONENTIAL]' },
+    { name: 'Apex', source: 'Basic Rune', chance: 2.5e212, stats: 'x1 Rune Bulk [EXPONENTIAL] + x1K Rune Speed [EXPONENTIAL]' },
+    { name: 'Constellation', source: 'Galactic Rune', chance: 2.5e223, stats: '???' },
+    { name: 'Torrent', source: 'Nature Rune', chance: 2.5e228, stats: 'x1 Rune Speed + Ticket Perk Unlock + Ticket Perk Unlock' },
 ];
 
 // --- Helper Functions ---
@@ -434,6 +440,7 @@ export default function App() {
                                 </div>
                             )}
 
+
                             <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-4 sticky top-4 z-10">
                                 <h3 className="text-xl font-bold text-center text-white mb-4">My Current Rate</h3>
                                 <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -461,31 +468,33 @@ export default function App() {
                                 </select>
                             </div>
 
-                            <div className="bg-purple-900/50 border border-purple-500/30 text-purple-300 text-center p-3 rounded-lg mb-4 space-y-2">
-                                <p className="font-bold">LeftySix is too slow to add new runes, so he made this custom box for me.</p>
-                                <p className="text-sm text-purple-200">This is a stop-gap for calculating times for new or unlisted runes. <strong className="font-semibold">This is NOT a real rune in the game.</strong></p>
-                            </div>
-
                             <div className="space-y-4">
-                                <div className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border-2 border-dashed border-purple-500/50`}>
-                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                        <div className="flex-1 min-w-0">
-                                            <h2 className="text-2xl font-bold text-white">Custom Rune Calculator</h2>
-                                            <p className="text-sm text-gray-400">Your Custom Input</p>
-                                            <div className="text-sm text-cyan-400 mt-2 flex items-center gap-2 flex-wrap">
-                                                <span>Chance: 1 / </span>
+                                <div className="bg-purple-900/50 border-2 border-dashed border-purple-500/60 p-5 rounded-lg mb-6">
+                                    <div className="text-center mb-4">
+                                        <h3 className="text-xl font-bold text-purple-200">Custom Rune Calculator</h3>
+                                        <p className="text-sm text-purple-300 mt-1">LeftySix is too slow, so here's a box for new runes.</p>
+                                        <p className="text-xs text-purple-400 mt-1">(This is a utility, not a real rune)</p>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                                        <div className="flex-1 text-center sm:text-left">
+                                            <label htmlFor="custom-chance" className="block text-sm font-medium text-purple-200 mb-1">Enter Rune Chance (1 in...)</label>
+                                            <div className="flex items-center gap-2 justify-center sm:justify-start">
                                                 <input
+                                                    id="custom-chance"
                                                     type="text"
                                                     value={customRuneChance}
                                                     onChange={(e) => setCustomRuneChance(e.target.value)}
-                                                    className="bg-gray-700/80 text-white p-1 rounded-md border border-gray-600 focus:border-cyan-500 w-32"
+                                                    className="bg-gray-700/80 text-white p-2 rounded-md border border-gray-600 focus:border-cyan-500 w-40 text-center"
                                                     placeholder="e.g., 1e300"
                                                 />
-                                                <span className="text-gray-400 text-xs">{customRuneConversion}</span>
+                                                <span className="text-gray-400 text-sm">{customRuneConversion}</span>
                                             </div>
                                         </div>
-                                        <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
-                                            {formatTime(customRuneDetails.time)}
+                                        <div className="text-center sm:text-right">
+                                            <p className="text-sm text-purple-200 mb-1">Calculated Time</p>
+                                            <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg min-w-[150px]">
+                                                {formatTime(customRuneDetails.time)}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
