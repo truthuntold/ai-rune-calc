@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.17';
+const version = '1.0.18';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    { version: '1.0.18', date: '2025-08-05', changes: ['Updated stats for the Constellation rune.'] },
     { version: '1.0.17', date: '2025-08-05', changes: ['Added Onyx, Strix, Liberty, Rocket, and Vanguard runes.'] },
     { version: '1.0.16', date: '2025-08-04', changes: ['Added Cosmic Dust, Star, Apex, Constellation, and Torrent runes.'] },
     { version: '1.0.15', date: '2025-08-03', changes: ['Added Whirl and Riptide runes.'] },
@@ -147,6 +148,22 @@ const runesData = [
     { name: 'Rocket', source: 'Galactic Rune', chance: 1.5e260, stats: 'new talent + x1.5 Tickets (MAX x1Sx) + x1 Rune Speed [EXPONENTIAL] (MAX x100K)' },
     { name: 'Vanguard', source: '5M Beginner', chance: 6.66e267, stats: 'x1 Rune Speed + x1 Rune Speed + x1 Rune Bulk' },
 ];
+
+// --- Analytics (Connected) ---
+/**
+ * Sends a tracking event using the global gtag function.
+ * @param {string} eventName - The name of the event.
+ * @param {object} eventParams - The parameters for the event.
+ */
+const trackEvent = (eventName, eventParams) => {
+    // Check if the gtag function exists on the window object
+    if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, eventParams);
+    } else {
+        // Fallback for development or if GA fails to load
+        console.log(`Analytics Event (GA not found): ${eventName}`, eventParams);
+    }
+};
 
 // --- Helper Functions ---
 function formatTime(totalSeconds) {
@@ -321,6 +338,10 @@ export default function App() {
     const [customRuneChance, setCustomRuneChance] = useState('1e300');
     const [isChangelogVisible, setIsChangelogVisible] = useState(false);
     const [showUpdateNotification, setShowUpdateNotification] = useState(false);
+    // Refs for managing analytics tracking debounce
+    const debounceTimeoutRef = useRef(null);
+    const rpsDebounceTimeoutRef = useRef(null);
+    const isInitialMount = useRef(true);
 
     useEffect(() => {
         const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
@@ -385,6 +406,66 @@ export default function App() {
 
         return { processedRunes: filtered, nextUpgradeName: nextUpgrade?.name };
     }, [rps, hideInstant, sortOrder, runeFilter]);
+
+    // Effect for tracking the next target rune with a debounce
+    useEffect(() => {
+        // Don't run on the initial mount.
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        // Clear the previous timeout if the user is still typing.
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current);
+        }
+
+        // Set a new timeout to track the event after a delay of 1 second.
+        debounceTimeoutRef.current = setTimeout(() => {
+            if (nextUpgradeName) {
+                trackEvent('next_target_rune_selected', {
+                    rune_name: nextUpgradeName,
+                });
+            }
+        }, 1000); // 1-second delay
+
+        // Cleanup function to clear the timeout if the component unmounts.
+        return () => {
+            if (debounceTimeoutRef.current) {
+                clearTimeout(debounceTimeoutRef.current);
+            }
+        };
+    }, [nextUpgradeName]); // This effect runs whenever nextUpgradeName changes.
+
+    // Effect for tracking the RPS value with a debounce
+    useEffect(() => {
+        // Don't run on the initial mount.
+        if (isInitialMount.current) {
+            return;
+        }
+
+        // Clear the previous timeout if the user is still typing.
+        if (rpsDebounceTimeoutRef.current) {
+            clearTimeout(rpsDebounceTimeoutRef.current);
+        }
+
+        // Set a new timeout to track the event after a delay.
+        rpsDebounceTimeoutRef.current = setTimeout(() => {
+            // Only track if the RPS is a valid positive number and there are no warnings.
+            if (rps > 0 && !rpsWarning) {
+                trackEvent('rps_value_set', {
+                    value: rps
+                });
+            }
+        }, 1000); // 1-second delay
+
+        // Cleanup function to clear the timeout if the component unmounts.
+        return () => {
+            if (rpsDebounceTimeoutRef.current) {
+                clearTimeout(rpsDebounceTimeoutRef.current);
+            }
+        };
+    }, [rps, rpsWarning]);
 
     const TabButton = ({ tabName, label }) => {
         const isActive = activeTab === tabName;
