@@ -142,6 +142,8 @@ const runesData = [
     { name: 'Apex', source: 'Basic Rune', chance: 2.5e212, stats: 'x1 Rune Bulk [EXPONENTIAL] + x1K Rune Speed [EXPONENTIAL]' },
     { name: 'Constellation', source: 'Galactic Rune', chance: 2.5e223, stats: 'x1 Rune Bulk (MAX x25) + x1 Rune Bulk (MAX x25) + New Talent' },
     { name: 'Torrent', source: 'Nature Rune', chance: 2.5e228, stats: 'x1 Rune Speed + Ticket Perk Unlock + Ticket Perk Unlock' },
+    { name: 'Sorcerer', source: '5M Beginner', chance: 1e234, stats: 'x1 Rune Speed (MAXx100) + x1 Rune Speed (MAX x1K)+ x1 Tickets (MAX x50B)' },
+    { name: 'Planet', source: 'Galactic Rune', chance: 3.3e238, stats: '+75K Bulk (MAX ???) + ^1 Bulk [EXPONENTIAL] (MAX ???)' },
     { name: 'Onyx', source: 'Color Rune', chance: 3.33e248, stats: 'x1 Rune Speed + x1 Rune Speed (EXPONENTIAL)' },
     { name: 'Strix', source: 'Basic Rune', chance: 2.5e256, stats: 'x1.01 Rune Speed (MAX x3) + 1 new talent' },
     { name: 'Liberty', source: '5M Royal', chance: 3.5e256, stats: 'x1 Rune Bulk + x1 Rune Speed + x1 Hail' },
@@ -164,6 +166,7 @@ const trackEvent = (eventName, eventParams) => {
         console.log(`Analytics Event (GA not found): ${eventName}`, eventParams);
     }
 };
+
 
 // --- Helper Functions ---
 function formatTime(totalSeconds) {
@@ -338,6 +341,7 @@ export default function App() {
     const [customRuneChance, setCustomRuneChance] = useState('1e300');
     const [isChangelogVisible, setIsChangelogVisible] = useState(false);
     const [showUpdateNotification, setShowUpdateNotification] = useState(false);
+
     // Refs for managing analytics tracking debounce
     const debounceTimeoutRef = useRef(null);
     const rpsDebounceTimeoutRef = useRef(null);
