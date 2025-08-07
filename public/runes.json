@@ -209,7 +209,7 @@
                 "type": "runeBulk",
                 "modifier": "multiplier",
                 "value": 2,
-                "max": 1e9,
+                "max": 1000000000,
                 "isExponential": true
             }
         ]
@@ -277,7 +277,7 @@
             "limited"
         ],
         "chance": 1.5e165,
-        "max": 6.7e10,
+        "max": 67000000000,
         "statsDisplay": "x1 Rune Speed (MAX x75)+ x1 Rune Speed (MAX x500) + x1 Rune Speed (MAX x50K)",
         "bonuses": [
             {
@@ -480,7 +480,7 @@
         "chance": 7.5e32,
         "max": 110540,
         "formula": "1.00025^(number of HF)",
-        "note": "Additional Info: 1.01 @ 26, 1.02 @ 60",
+        "note": "1.01 @ 26, 1.02 @ 60",
         "statsDisplay": "x1 Rune Speed [EXPONENTIAL] (MAX x1T)+ Ticket Perks Upgrade",
         "bonuses": [
             {
@@ -615,19 +615,19 @@
     {
         "name": "Nexus",
         "source": "Basic Rune",
-        "chance": 1e306,
+        "chance": 1e303,
         "max": 1e308,
         "statsDisplay": "x1NoNg Chrome + x2.49UCe tickets + Ticket Upgrade Unlock",
         "bonuses": [
             {
                 "type": "chrome",
                 "modifier": "multiplier",
-                "value": 1e303
+                "value": 1.01
             },
             {
                 "type": "tickets",
                 "modifier": "multiplier",
-                "value": 2.49e306
+                "value": 1.02
             },
             {
                 "type": "ticketPerk",
@@ -656,7 +656,7 @@
     {
         "name": "Gleam",
         "source": "Color Rune",
-        "chance": 1e49,
+        "chance": 1e47,
         "max": 1000000,
         "statsDisplay": "x1.01 Rune Speed (MAX x1K) + x1 Rune Bulk (MAX x10K)",
         "bonuses": [

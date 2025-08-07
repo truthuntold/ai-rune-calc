@@ -622,12 +622,12 @@
             {
                 "type": "chrome",
                 "modifier": "multiplier",
-                "value": 1e303
+                "value": 1.01
             },
             {
                 "type": "tickets",
                 "modifier": "multiplier",
-                "value": 2.49e306
+                "value": 1.02
             },
             {
                 "type": "ticketPerk",

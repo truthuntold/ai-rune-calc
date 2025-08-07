@@ -1,10 +1,20 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.0.18';
+const version = '1.1.0';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
+    {
+        version: '1.1.0',
+        date: '2025-08-06',
+        changes: [
+            'Major UI Overhaul: Replaced the long stat string with a formatted, icon-driven bonus list.',
+            'Data is now fetched live from the official GitHub repository.',
+            'Added humorous messages for extremely long wait times (>100 years).',
+            'Made bonus display boxes responsive and uniform for a better mobile experience.'
+        ]
+    },
     { version: '1.0.18', date: '2025-08-05', changes: ['Updated stats for the Constellation rune.'] },
     { version: '1.0.17', date: '2025-08-05', changes: ['Added Onyx, Strix, Liberty, Rocket, and Vanguard runes.'] },
     { version: '1.0.16', date: '2025-08-04', changes: ['Added Cosmic Dust, Star, Apex, Constellation, and Torrent runes.'] },
@@ -147,6 +157,76 @@ const LoadingSpinner = () => (
     </div>
 );
 
+// --- Bonus Display Components ---
+// NOTE: Make sure to add this script to your index.html for the icons to work:
+// <script src="https://unpkg.com/lucide@latest"></script>
+const BonusIcon = ({ type }) => {
+    const iconStyle = "w-5 h-5 mr-3 text-cyan-400";
+    let iconName = "check-circle"; // Default icon
+
+    switch (type) {
+        case 'runeSpeed': iconName = "zap"; break;
+        case 'runeLuck': iconName = "clover"; break;
+        case 'runeBulk': iconName = "layers"; break;
+        case 'tickets': iconName = "ticket"; break;
+        case 'energy': iconName = "battery-charging"; break;
+        case 'orbs': iconName = "circle-dot"; break;
+        case 'newTalent':
+        case 'talentUpgrade':
+        case 'ticketPerk':
+            iconName = "sparkles"; break;
+        default: iconName = "award"; break;
+    }
+
+    useEffect(() => {
+        // Lucide's script finds all `[data-lucide]` elements and replaces them with SVG icons.
+        // We need to re-run this after React renders the new `<i>` elements.
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    }, [type]);
+
+    return <i data-lucide={iconName} className={iconStyle}></i>;
+};
+
+const BonusDisplay = ({ bonus, formatNumber }) => {
+    const statNameMap = {
+        runeSpeed: "Rune Speed",
+        runeLuck: "Rune Luck",
+        runeBulk: "Rune Bulk",
+        tickets: "Tickets",
+        energy: "Energy",
+        orbs: "Orbs",
+        chrome: "Chrome",
+        walkspeed: "Walkspeed",
+        chestChance: "Chest Chance",
+        rTokenCooldown: "RToken Cooldown",
+        baseChrome: "Base Chrome",
+        boostSpheres: "Boost Spheres",
+        hail: "Hail"
+    };
+
+    const modifierMap = {
+        multiplier: 'x',
+        additive: '+',
+        subtractive: '-',
+        power: '^'
+    };
+
+    return (
+        <div className="flex items-center text-green-300">
+            <BonusIcon type={bonus.type} />
+            <span className="flex-1">
+                <span className="font-bold">{modifierMap[bonus.modifier] || ''}{formatNumber(bonus.value)}</span>
+                {' '}{statNameMap[bonus.type] || bonus.type}
+                {bonus.max && <span className="text-gray-400 text-sm ml-2">(Max: {typeof bonus.max === 'number' ? formatNumber(bonus.max) : bonus.max})</span>}
+            </span>
+            {bonus.isExponential && <span className="ml-2 text-xs font-bold text-yellow-400 bg-yellow-900/50 px-2 py-1 rounded">EXP</span>}
+            {bonus.isDualExponential && <span className="ml-2 text-xs font-bold text-orange-400 bg-orange-900/50 px-2 py-1 rounded">DUAL EXP</span>}
+        </div>
+    );
+};
+
 
 // --- Main Application Component ---
 export default function App() {
@@ -169,7 +249,7 @@ export default function App() {
         const fetchData = async () => {
             try {
                 const [runesResponse, scalesResponse] = await Promise.all([
-                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json'),
+                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runestest.json'),
                     fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json')
                 ]);
                 if (!runesResponse.ok || !scalesResponse.ok) {
@@ -501,10 +581,14 @@ export default function App() {
                                                     </div>
                                                     <p className="text-sm text-gray-400">{rune.source}</p>
                                                     <p className="text-sm text-cyan-400">{formatChance(rune)}</p>
-                                                    <p className="text-sm text-green-400 mt-2">
-                                                        <strong className="font-semibold">Gives: </strong>
-                                                        {rune.statsDisplay}
-                                                    </p>
+                                                    <div className="mt-3 bg-gray-800/50 p-3 rounded-lg space-y-2 min-h-[8rem]">
+                                                        <h4 className="font-semibold text-green-400">Bonuses:</h4>
+                                                        {rune.bonuses && rune.bonuses
+                                                            .filter(bonus => typeof bonus.value === 'number')
+                                                            .map((bonus, index) => (
+                                                                <BonusDisplay key={index} bonus={bonus} formatNumber={formatNumber} />
+                                                            ))}
+                                                    </div>
                                                 </div>
                                                 <div className={`text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px] ${isSpecialChance ? 'bg-purple-500/10 border border-purple-500/30 text-purple-300' : 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-300'}`}>
                                                     {isSpecialChance ? 'Special Cost' : formatTime(rune.time)}
