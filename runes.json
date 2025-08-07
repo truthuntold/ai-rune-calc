@@ -973,7 +973,7 @@
     {
         "name": "Oblivion",
         "source": "Polychrome Rune",
-        "chance": 5e75,
+        "chance": 5e73,
         "max": 2000000,
         "statsDisplay": "x1.02 Rune Bulk (MAX x50k) + New Talent",
         "bonuses": [
