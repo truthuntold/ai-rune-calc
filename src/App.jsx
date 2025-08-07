@@ -248,9 +248,14 @@ export default function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Define fetch options to disable caching
+                const fetchOptions = { cache: 'no-store' };
+                // Generate a unique value for the query parameter
+                const cacheBuster = `?v=${Date.now()}`;
+
                 const [runesResponse, scalesResponse] = await Promise.all([
-                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json'),
-                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json')
+                    fetch(`https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json${cacheBuster}`),
+                    fetch(`https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json${cacheBuster}`)
                 ]);
                 if (!runesResponse.ok || !scalesResponse.ok) {
                     throw new Error('Network response was not ok');
