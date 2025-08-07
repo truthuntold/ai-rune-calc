@@ -249,7 +249,7 @@ export default function App() {
         const fetchData = async () => {
             try {
                 const [runesResponse, scalesResponse] = await Promise.all([
-                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runestest.json'),
+                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json'),
                     fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json')
                 ]);
                 if (!runesResponse.ok || !scalesResponse.ok) {

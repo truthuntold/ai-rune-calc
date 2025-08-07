@@ -1100,10 +1100,7 @@
     {
         "name": "Bozo",
         "source": "Cryo Rune",
-        "chance": {
-            "value": 10000,
-            "unit": "Ancient Runes"
-        },
+        "chance": 2e294,
         "max": "RS@40/Base Chrome@500",
         "statsDisplay": "+50 Base Chrome + x3 Rune Speed",
         "bonuses": [
