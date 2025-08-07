@@ -1,0 +1,1206 @@
+[
+    {
+        "name": "Superstar",
+        "source": "5M Beginner",
+        "tags": [
+            "limited"
+        ],
+        "chance": 2.5e10,
+        "max": 50,
+        "statsDisplay": "x1M Energy [EXPONENTIAL] (MAX x1NoNg) + Talent Upgrade (Hall of Fame,between both Runes, Rune Clone)",
+        "bonuses": [
+            {
+                "type": "energy",
+                "modifier": "multiplier",
+                "value": 1000000,
+                "max": 1e+303,
+                "isExponential": true
+            },
+            {
+                "type": "talentUpgrade",
+                "description": "Hall of Fame, between both Runes, Rune Clone"
+            }
+        ]
+    },
+    {
+        "name": "Overlord",
+        "source": "5M Beginner",
+        "tags": [
+            "limited"
+        ],
+        "chance": 5e58,
+        "max": 4170000,
+        "statsDisplay": "x1.01 Energy [EXPONENTIAL] (MAX 1NoNg) +24 Rune Bulk (MAX +100M)",
+        "bonuses": [
+            {
+                "type": "energy",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 1e+303,
+                "isExponential": true
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "additive",
+                "value": 24,
+                "max": 100000000
+            }
+        ]
+    },
+    {
+        "name": "Sorcerer",
+        "source": "5M Beginner",
+        "tags": [
+            "limited"
+        ],
+        "chance": 1e234,
+        "statsDisplay": "x1 Rune Speed (MAXx100) + x1 Rune Speed (MAX x1K)+ x1 Tickets (MAX x50B)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 100
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1000
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 5e10
+            }
+        ]
+    },
+    {
+        "name": "Vanguard",
+        "source": "5M Beginner",
+        "tags": [
+            "limited",
+            "hidden",
+            "exponential"
+        ],
+        "chance": 6.66e267,
+        "max": "2.8K,66.6B for Rune Speed 370K,100T for Rune Bulk",
+        "statsDisplay": "x1 Rune Speed (MAX x15) + x1 Rune Speed (MAX x750)+ x1 Rune Bulk (MAX x4K) + x1 Rune Bulk (MAX x15K)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 15
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 750
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 4000
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 15000
+            }
+        ]
+    },
+    {
+        "name": "Kingslayer",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 2.5e11,
+        "max": 400,
+        "note": "+0.25x rune luck/speed per rune",
+        "statsDisplay": "x25K Orbs [EXPONENTIAL] | (MAX x1NoNg) + x1.25 Rune Luck (MAX x100) + x1.25 Rune Speed (MAX x100)",
+        "bonuses": [
+            {
+                "type": "orbs",
+                "modifier": "multiplier",
+                "value": 25000,
+                "max": 1e+303,
+                "isExponential": true
+            },
+            {
+                "type": "runeLuck",
+                "modifier": "multiplier",
+                "value": 1.25,
+                "max": 100
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.25,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "name": "Divinity",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 7.5e16,
+        "max": 50000,
+        "statsDisplay": "+2 Rune Bulk (MAX +100k) + x1 Rune Luck (MAX x10)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "additive",
+                "value": 2,
+                "max": 100000
+            },
+            {
+                "type": "runeLuck",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10
+            }
+        ]
+    },
+    {
+        "name": "Prosperity",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 2.5e22,
+        "max": 10000000,
+        "statsDisplay": "-1 Chest Chance (MAX -1/6k) + x1.01 Rune Speed (MAX x100K)",
+        "bonuses": [
+            {
+                "type": "chestChance",
+                "modifier": "subtractive",
+                "value": 1,
+                "max": "1/6k"
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 100000
+            }
+        ]
+    },
+    {
+        "name": "Immortality",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 2e82,
+        "max": 41500,
+        "formula": "1.0005^(number of Immortality)",
+        "statsDisplay": "x2 Rune Bulk [EXPONENTIAL] (MAX x1B)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 2,
+                "max": 1000000000,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Odyssey",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 1.5e109,
+        "max": 9500000,
+        "formula": "1.000001^(number of Odyssey)",
+        "statsDisplay": "x1 Rune Bulk [EXPONENTIAL] (MAX x10K)+ x1 Rune Bulk (MAX x50) + x1 Rune Speed (MAX x50)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10000,
+                "isExponential": true
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 50
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 50
+            }
+        ]
+    },
+    {
+        "name": "Destiny",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 5e121,
+        "max": 200000000,
+        "statsDisplay": "x1 Rune Bulk (MAX x10K) + x1 Rune Speed (MAX x250)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10000
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 250
+            }
+        ]
+    },
+    {
+        "name": "Triarch",
+        "source": "5M Royal",
+        "tags": [
+            "limited"
+        ],
+        "chance": 1.5e165,
+        "max": 67000000000,
+        "statsDisplay": "x1 Rune Speed (MAX x75)+ x1 Rune Speed (MAX x500) + x1 Rune Speed (MAX x50K)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 75
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 500
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 50000
+            }
+        ]
+    },
+    {
+        "name": "Liberty",
+        "source": "5M Royal",
+        "tags": [
+            "limited",
+            "hidden"
+        ],
+        "chance": 3.5e256,
+        "max": 40000,
+        "statsDisplay": "x1 Rune Bulk (MAX x10) + x1 Rune Speed (MAX x100) + x1 Hail (MAX x1.25)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 100
+            },
+            {
+                "type": "hail",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1.25
+            }
+        ]
+    },
+    {
+        "name": "Cosmic Dust",
+        "source": "Galactic Rune",
+        "chance": 1e207,
+        "max": 1000000,
+        "note": "Rune Luck doesn't affect this rune!",
+        "statsDisplay": "+ x1 Tickets (MAX x25) + x1 Rune Speed (MAX x15)",
+        "bonuses": [
+            {
+                "type": "tickets",
+                "modifier": "additive",
+                "value": 1,
+                "max": 25
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 15
+            }
+        ]
+    },
+    {
+        "name": "Star",
+        "source": "Galactic Rune",
+        "chance": 2.5e208,
+        "max": 140000,
+        "note": "Rune Luck doesn't affect this rune!",
+        "statsDisplay": "+ x1 Tickets (MAX x1M) + x1 Rune Speed (MAX x1.5K) [BOTH EXPONENTIAL]",
+        "bonuses": [
+            {
+                "type": "tickets",
+                "modifier": "additive",
+                "value": 1,
+                "max": 1000000,
+                "isExponential": true
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1500,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Constellation",
+        "source": "Galactic Rune",
+        "chance": 2.5e225,
+        "max": 100000,
+        "note": "Rune Luck doesn't affect this rune!",
+        "statsDisplay": "x1 Rune Bulk (MAX x25) + x1 Rune Bulk (MAX x25) + New Talent",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 25
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 25
+            },
+            {
+                "type": "newTalent",
+                "description": "New Talent"
+            }
+        ]
+    },
+    {
+        "name": "Planet",
+        "source": "Galactic Rune",
+        "chance": 3.3e238,
+        "max": "18K for ^Rune Bulk 340M for +Rune Bulk",
+        "note": "Rune Luck doesn't affect this rune!",
+        "statsDisplay": "+75K Bulk (MAX 25T) + ^1 Bulk [EXPONENTIAL] (MAX 1^035)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "additive",
+                "value": 75000,
+                "max": 2.5e13
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "power",
+                "value": 1,
+                "max": "1^035",
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Rocket",
+        "source": "Galactic Rune",
+        "chance": 1.5e260,
+        "max": "5.8M for Rune Speed 2Sx for Tickets",
+        "note": "Rune Luck doesn't affect this rune!",
+        "statsDisplay": "New Talent + x1.5 Tickets (MAX x1Sx) + x1 Rune Speed [EXPONENTIAL] (MAX x100K)",
+        "bonuses": [
+            {
+                "type": "newTalent",
+                "description": "New Talent"
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1.5,
+                "max": 1e21
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 100000,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Mystery",
+        "source": "Basic Rune",
+        "chance": 1e12,
+        "max": 4000,
+        "statsDisplay": "x1 Rune Bulk (MAX x5) + -0.1s RToken Cooldown (MAX -60s)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 5
+            },
+            {
+                "type": "rTokenCooldown",
+                "modifier": "subtractive",
+                "value": 0.1,
+                "max": 60
+            }
+        ]
+    },
+    {
+        "name": "Hyper Finality",
+        "source": "Basic Rune",
+        "chance": 7.5e32,
+        "max": 110540,
+        "formula": "1.00025^(number of HF)",
+        "note": "1.01 @ 26, 1.02 @ 60",
+        "statsDisplay": "x1 Rune Speed [EXPONENTIAL] (MAX x1T)+ Ticket Perks Upgrade",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1e12,
+                "isExponential": true
+            },
+            {
+                "type": "ticketPerk",
+                "description": "Upgrade"
+            }
+        ]
+    },
+    {
+        "name": "Shyft",
+        "source": "Basic Rune",
+        "chance": 7.5e55,
+        "max": 50000,
+        "statsDisplay": "+1 Walkspeed (MAX 30) +7 Rune Bulk (MAX +500k) + New Talent (Behind the Basic Rune on island)",
+        "bonuses": [
+            {
+                "type": "walkspeed",
+                "modifier": "additive",
+                "value": 1,
+                "max": 30
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "additive",
+                "value": 7,
+                "max": 500000
+            },
+            {
+                "type": "newTalent",
+                "description": "Behind the Basic Rune on island"
+            }
+        ]
+    },
+    {
+        "name": "Array",
+        "source": "Basic Rune",
+        "chance": 1e135,
+        "max": 7150000,
+        "statsDisplay": "+3.5k Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets (MAX x7.5)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "additive",
+                "value": 3500,
+                "max": 2.5e10
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 25
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 7.5
+            }
+        ]
+    },
+    {
+        "name": "Disarray",
+        "source": "Basic Rune",
+        "chance": 7.5e174,
+        "max": 3700000,
+        "statsDisplay": "+1 Rune Bulk [EXPONENTIAL] (MAX +1T) + x1 Rune Bulk (MAX x250)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "additive",
+                "value": 1,
+                "max": 1e12,
+                "isExponential": true
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 250
+            }
+        ]
+    },
+    {
+        "name": "Apex",
+        "source": "Basic Rune",
+        "chance": 2.5e212,
+        "max": "Speed 14K MAX bulk 31M",
+        "statsDisplay": "x1 Rune Bulk [EXPONENTIAL] (MAX x25K) + x1 Rune speed [EXPONENTIAL] (MAX x1K)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 25000,
+                "isExponential": true
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1000,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Strix",
+        "source": "Basic Rune",
+        "chance": 2.5e256,
+        "max": 200,
+        "statsDisplay": "x1.01 Rune Speed (MAX x3) + 1 new talent",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 3
+            },
+            {
+                "type": "newTalent",
+                "description": "1 new talent"
+            }
+        ]
+    },
+    {
+        "name": "Nexus",
+        "source": "Basic Rune",
+        "chance": 1e303,
+        "max": 1e308,
+        "statsDisplay": "x1NoNg Chrome + x2.49UCe tickets + Ticket Upgrade Unlock",
+        "bonuses": [
+            {
+                "type": "chrome",
+                "modifier": "multiplier",
+                "value": 1e303
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 2.49e306
+            },
+            {
+                "type": "ticketPerk",
+                "description": "Unlock"
+            }
+        ]
+    },
+    {
+        "name": "Bloom",
+        "source": "Color Rune",
+        "chance": 7.5e9,
+        "statsDisplay": "1k Boost Spheres [No Limit] + Talent Upgrade (Prisms Talent Tree)",
+        "bonuses": [
+            {
+                "type": "boostSpheres",
+                "modifier": "additive",
+                "value": 1000,
+                "max": "No Limit"
+            },
+            {
+                "type": "talentUpgrade",
+                "description": "Prisms Talent Tree"
+            }
+        ]
+    },
+    {
+        "name": "Gleam",
+        "source": "Color Rune",
+        "chance": 1e47,
+        "max": 1000000,
+        "statsDisplay": "x1.01 Rune Speed (MAX x1K) + x1 Rune Bulk (MAX x10K)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 1000
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10000
+            }
+        ]
+    },
+    {
+        "name": "Vanta",
+        "source": "Color Rune",
+        "chance": 7e95,
+        "max": "995K for Rune 13Qd for Tickets",
+        "formula": "1.000015^(number of vanta)",
+        "statsDisplay": "x2 Rune Speed [EXPONENTIAL] (MAX 3M) + x1 Rune Bulk (MAX x3) + x2 Tickets (MAX 1DDe)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 2,
+                "max": 3000000,
+                "isExponential": true
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 3
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 2,
+                "max": 1e39
+            }
+        ]
+    },
+    {
+        "name": "Whirl",
+        "source": "Color Rune",
+        "chance": 1e204,
+        "max": "5K for Rune Speed 1M for Tickets",
+        "statsDisplay": "x1 Rune Speed (MAX x25)+ x1 Tickets (MAX x1K)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 25
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1000
+            }
+        ]
+    },
+    {
+        "name": "Onyx",
+        "source": "Color Rune",
+        "chance": 3.33e248,
+        "max": "37K for Rune Speed 1 8M for Rune Speed 2",
+        "statsDisplay": "x1 Rune Speed (MAX x75)+ x1 Rune Speed (EXPONENTIAL) (MAX x100K)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 75
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 100000,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Thorn",
+        "source": "Nature Rune",
+        "chance": 1e13,
+        "max": "500k for Rune Speed 7.5B for Tickets",
+        "statsDisplay": "Ticket Perks Upgrade (Rune Bulk) + x1.05 Rune Speed (MAX x25k) + x2.5 Tickets (MAX x10B)",
+        "bonuses": [
+            {
+                "type": "ticketPerk",
+                "description": "Upgrade (Rune Bulk)"
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.05,
+                "max": 25000
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 2.5,
+                "max": 1e10
+            }
+        ]
+    },
+    {
+        "name": "Squid",
+        "source": "Nature Rune",
+        "chance": 1.5e130,
+        "max": "3.6k for Rune Bulk 135T for Tickets",
+        "statsDisplay": "Ticket Perk (Rune Bulk) + x2 Rune Bulk (MAX x200) +x1.01 Tickets (MAX x1T)",
+        "bonuses": [
+            {
+                "type": "ticketPerk",
+                "description": "(Rune Bulk)"
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 2,
+                "max": 200
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 1e12
+            }
+        ]
+    },
+    {
+        "name": "Cyclone",
+        "source": "Nature Rune",
+        "chance": 2.5e140,
+        "max": 1000000,
+        "statsDisplay": "+^1.2 Rune Bulk + x1K Rune Speed + Talent Upgrade (T1 area on a hill)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "power",
+                "value": 1.2
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1000
+            },
+            {
+                "type": "talentUpgrade",
+                "description": "T1 area on a hill"
+            }
+        ]
+    },
+    {
+        "name": "Bolt",
+        "source": "Nature Rune",
+        "chance": 1.75e182,
+        "max": 500000000,
+        "statsDisplay": "x1 Rune Bulk (MAX x100) + x1 Rune Bulk (MAX x250) + New Talent",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 100
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 250
+            },
+            {
+                "type": "newTalent",
+                "description": "New Talent"
+            }
+        ]
+    },
+    {
+        "name": "Riptide",
+        "source": "Nature Rune",
+        "chance": 1.5e205,
+        "max": 800000,
+        "statsDisplay": "x2 Rune Speed + x1 Rune Speed (MAX x500) + x1 Tickets [EXPONENTIAL] (MAX x10De)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 2
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 500
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1e34,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Torrent",
+        "source": "Nature Rune",
+        "chance": 2.5e228,
+        "max": 2000000,
+        "statsDisplay": "x1 Rune Speed (MAX x10k ) + 2 Ticket perks",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10000
+            },
+            {
+                "type": "ticketPerk",
+                "description": "2 perks"
+            }
+        ]
+    },
+    {
+        "name": "Aether",
+        "source": "Polychrome Rune",
+        "chance": 1.5e10,
+        "max": 9000,
+        "statsDisplay": "Rune Luck (MAX x10) + Talent Upgrade (Prisms Talent Tree, Hidden from a big rock on right side)",
+        "bonuses": [
+            {
+                "type": "runeLuck",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 10
+            },
+            {
+                "type": "talentUpgrade",
+                "description": "Prisms Talent Tree, Hidden from a big rock on right side"
+            }
+        ]
+    },
+    {
+        "name": "Vexed",
+        "source": "Polychrome Rune",
+        "chance": 5e10,
+        "max": 40,
+        "statsDisplay": "x1.05 Tickets (MAX x3) + Talent Upgrade (Realm 2, Hidden close of Cyro Rune on Right side from a floating island)",
+        "bonuses": [
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1.05,
+                "max": 3
+            },
+            {
+                "type": "talentUpgrade",
+                "description": "Realm 2, Hidden close of Cyro Rune on Right side from a floating island"
+            }
+        ]
+    },
+    {
+        "name": "Abyssium",
+        "source": "Polychrome Rune",
+        "chance": 1.25e20,
+        "max": 10000,
+        "statsDisplay": "x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)",
+        "bonuses": [
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 2.1,
+                "max": 10000
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "name": "Oscillon",
+        "source": "Polychrome Rune",
+        "chance": 3.33e27,
+        "max": 50000000,
+        "statsDisplay": "x1.02 Rune Luck (MAX x1M) + ^1 Rune Bulk (MAX ^1.3)",
+        "bonuses": [
+            {
+                "type": "runeLuck",
+                "modifier": "multiplier",
+                "value": 1.02,
+                "max": 1000000
+            },
+            {
+                "type": "runeBulk",
+                "modifier": "power",
+                "value": 1,
+                "max": 1.3
+            }
+        ]
+    },
+    {
+        "name": "Oblivion",
+        "source": "Polychrome Rune",
+        "chance": 5e75,
+        "max": 2000000,
+        "statsDisplay": "x1.02 Rune Bulk (MAX x50k) + New Talent",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1.02,
+                "max": 50000
+            },
+            {
+                "type": "newTalent",
+                "description": "New Talent"
+            }
+        ]
+    },
+    {
+        "name": "Zephyr",
+        "source": "Polychrome Rune",
+        "chance": 5e191,
+        "max": 418,
+        "statsDisplay": "x1 Rune Bulk [DUAL EXPONENTIAL] (MAX x1M)+ x1.01 Rune Speed (MAX x3)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1000000,
+                "isDualExponential": true
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 3
+            }
+        ]
+    },
+    {
+        "name": "Raze",
+        "source": "Polychrome Rune",
+        "chance": 7.5e213,
+        "max": "RS@14k/RB@20m/chrome@400m",
+        "statsDisplay": "x500 Rune Bulk + x15 Rune Speed + x1K Chrome",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 500
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 15
+            },
+            {
+                "type": "chrome",
+                "modifier": "multiplier",
+                "value": 1000
+            }
+        ]
+    },
+    {
+        "name": "Okay Garmin Save Video",
+        "source": "Cryo Rune",
+        "chance": 1e42,
+        "max": 1200000,
+        "statsDisplay": "x1 Tickets (MAX x1SxDe)",
+        "bonuses": [
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1e51
+            }
+        ]
+    },
+    {
+        "name": "Stray",
+        "source": "Cryo Rune",
+        "chance": 1e160,
+        "max": "60K for Rune Speed 4M for Tickets",
+        "statsDisplay": "x1 Rune Speed (MAX x75K)+ x1 Tickets (MAX 100No) [BOTH EXPONENTIAL]",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 75000,
+                "isExponential": true
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1e32,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Buff",
+        "source": "Cryo Rune",
+        "chance": 2e225,
+        "max": 35000,
+        "note": "Chance is 1/God Knows How Much or 1/2TSg",
+        "statsDisplay": "x1 Tickets (MAX x50K) + x1 Tickets (MAX x1M) [BOTH EXPONENTIAL]",
+        "bonuses": [
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 50000,
+                "isExponential": true
+            },
+            {
+                "type": "tickets",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 1000000,
+                "isExponential": true
+            }
+        ]
+    },
+    {
+        "name": "Bozo",
+        "source": "Cryo Rune",
+        "chance": {
+            "value": 10000,
+            "unit": "Ancient Runes"
+        },
+        "max": "RS@40/Base Chrome@500",
+        "statsDisplay": "+50 Base Chrome + x3 Rune Speed",
+        "bonuses": [
+            {
+                "type": "baseChrome",
+                "modifier": "additive",
+                "value": 50
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 3
+            }
+        ]
+    },
+    {
+        "name": "Blizzard",
+        "source": "Arctic Rune",
+        "chance": 1e11,
+        "max": 6,
+        "statsDisplay": "x1.05 Rune Bulk (MAX x1.3) + Ticket Perk (Rune Luck)",
+        "bonuses": [
+            {
+                "type": "runeBulk",
+                "modifier": "multiplier",
+                "value": 1.05,
+                "max": 1.3
+            },
+            {
+                "type": "ticketPerk",
+                "description": "(Rune Luck)"
+            }
+        ]
+    },
+    {
+        "name": "Mirror",
+        "source": "Arctic Rune",
+        "chance": 7.5e60,
+        "max": 200000000,
+        "statsDisplay": "x1.01 Rune Speed (MAX 50K) + x1 Rune Speed (MAX 500K)",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 50000
+            },
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1,
+                "max": 500000
+            }
+        ]
+    },
+    {
+        "name": "Frostbite",
+        "source": "Arctic Rune",
+        "chance": 3e103,
+        "max": 10000000,
+        "statsDisplay": "x1.01 Rune Speed (MAX x100K) + New Talent",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 1.01,
+                "max": 100000
+            },
+            {
+                "type": "newTalent",
+                "description": "New Talent"
+            }
+        ]
+    },
+    {
+        "name": "Glint",
+        "source": "Arctic Rune",
+        "chance": 3.33e219,
+        "max": "Chrome@2k/RS@6.3m/chrome@1b",
+        "statsDisplay": "x500 RS [EXP] + x100 Chrome + x1K Chrome",
+        "bonuses": [
+            {
+                "type": "runeSpeed",
+                "modifier": "multiplier",
+                "value": 500,
+                "isExponential": true
+            },
+            {
+                "type": "chrome",
+                "modifier": "multiplier",
+                "value": 100
+            },
+            {
+                "type": "chrome",
+                "modifier": "multiplier",
+                "value": 1000
+            }
+        ]
+    }
+]
