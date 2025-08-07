@@ -26,152 +26,34 @@ const changelog = [
     { version: '1.0.0', date: '2025-08-01', changes: ['Added versioning and a changelog.', 'Improved styling for rune descriptions.', 'Added a message to report incorrect values.', 'Made RPS input parsing case-insensitive.'] },
 ];
 
-
-/**
- * Generates a comprehensive map of short scale number abbreviations to their values
- * based on the user-provided list.
- * @returns {Object} A map where keys are abbreviations and values are their numeric equivalents.
- */
-const generateScaleMap = () => {
-    const scales = {
-        '': 1,
-        // Standard names up to Decillion
-        'Thousand': 1e3, 'Million': 1e6, 'Billion': 1e9, 'Trillion': 1e12, 'Quadrillion': 1e15,
-        'Quintillion': 1e18, 'Sextillion': 1e21, 'Septillion': 1e24, 'Octillion': 1e27, 'Nonillion': 1e30,
-        'Decillion': 1e33,
-        // User provided short names
-        'K': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12, 'Qd': 1e15, 'Qn': 1e18, 'Sx': 1e21, 'Sp': 1e24,
-        'Oc': 1e27, 'No': 1e30, 'De': 1e33,
-        'UDe': 1e36, 'DDe': 1e39, 'TDe': 1e42, 'QdDe': 1e45, 'QnDe': 1e48, 'SxDe': 1e51, 'SpDe': 1e54,
-        'OcDe': 1e57, 'NoDe': 1e60, 'Vt': 1e63,
-        'UVt': 1e66, 'DVt': 1e69, 'TVt': 1e72, 'QdVt': 1e75, 'QnVt': 1e78, 'SxVt': 1e81, 'SpVt': 1e84,
-        'OcVt': 1e87, 'NoVt': 1e90, 'Tg': 1e93,
-        'UTg': 1e96, 'DTg': 1e99, 'TTg': 1e102, 'QdTg': 1e105, 'QnTg': 1e108, 'SxTg': 1e111, 'SpTg': 1e114,
-        'OcTg': 1e117, 'NoTg': 1e120, 'qg': 1e123,
-        'Uqg': 1e126, 'Dqg': 1e129, 'Tqg': 1e132, 'Qdqg': 1e135, 'Qnqg': 1e138, 'Sxqg': 1e141, 'Spqg': 1e144,
-        'Ocqg': 1e147, 'Noqg': 1e150, 'Qg': 1e153,
-        'UQg': 1e156, 'DQg': 1e159, 'TQg': 1e162, 'QdQg': 1e165, 'QnQg': 1e168, 'SxQg': 1e171, 'SpQg': 1e174,
-        'OcQg': 1e177, 'NoQg': 1e180, 'sg': 1e183,
-        'Usg': 1e186, 'Dsg': 1e189, 'Tsg': 1e192, 'Qdsg': 1e195, 'Qnsg': 1e198, 'Sxsg': 1e201, 'Spsg': 1e204,
-        'Ocsg': 1e207, 'Nosg': 1e210, 'Sg': 1e213,
-        'USg': 1e216, 'DSg': 1e219, 'TSg': 1e222, 'QdSg': 1e225, 'QnSg': 1e228, 'SxSg': 1e231, 'SpSg': 1e234,
-        'OcSg': 1e237, 'NoSg': 1e240, 'Og': 1e243,
-        'UOg': 1e246, 'DOg': 1e249, 'TOg': 1e252, 'QdOg': 1e255, 'QnOg': 1e258, 'SxOg': 1e261, 'SpOg': 1e264,
-        'OcOg': 1e267, 'NoOg': 1e270, 'Ng': 1e273,
-        'UNg': 1e276, 'DNg': 1e279, 'TNg': 1e282, 'QdNg': 1e285, 'QnNg': 1e288, 'SxNg': 1e291, 'SpNg': 1e294,
-        'OcNg': 1e297, 'NoNg': 1e300, 'Ce': 1e303,
-        'UCe': 1e306, 'DCe': 1e309, 'TCe': 1e312, 'QdCe': 1e315, 'QnCe': 1e318, 'SxCe': 1e321, 'SpCe': 1e324,
-        'OcCe': 1e327, 'NoCe': 1e330, 'DeCe': 1e333, 'UDeCe': 1e336, 'DDeCe': 1e339, 'TDeCe': 1e342,
-        'QdDeCe': 1e345, 'QnDeCe': 1e348, 'SxDeCe': 1e351, 'SpDeCe': 1e354, 'OcDeCe': 1e357, 'NoDeCe': 1e360,
-        'VtCe': 1e363, 'UVtCe': 1e366, 'DVtCe': 1e369, 'TVtCe': 1e372, 'QdVtCe': 1e375, 'QnVtCe': 1e378,
-        'SxVtCe': 1e381, 'SpVtCe': 1e384, 'OcVtCe': 1e387, 'NoVtCe': 1e390, 'TgCe': 1e393, 'UTgCe': 1e396,
-        'DTgCe': 1e399, 'TTgCe': 1e402, 'QdTgCe': 1e405, 'QnTgCe': 1e408, 'SxTgCe': 1e411, 'SpTgCe': 1e414,
-        'OcTgCe': 1e417, 'NoTgCe': 1e420, 'qgCe': 1e423, 'UqgCe': 1e426, 'DqgCe': 1e429, 'TqgCe': 1e432,
-        'QdqgCe': 1e435, 'QnqgCe': 1e438, 'SxqgCe': 1e441, 'SpqgCe': 1e444, 'OcqgCe': 1e447, 'NoqgCe': 1e450,
-        'QgCe': 1e453, 'UQgCe': 1e456, 'DQgCe': 1e459, 'TQgCe': 1e462, 'QdQgCe': 1e465, 'QnQgCe': 1e468,
-        'SxQgCe': 1e471, 'SpQgCe': 1e474, 'OcQgCe': 1e477, 'NoQgCe': 1e480, 'sgCe': 1e483, 'UsgCe': 1e486,
-        'DsgCe': 1e489, 'TsgCe': 1e492, 'QdsgCe': 1e495, 'QnsgCe': 1e498, 'SxsgCe': 1e501, 'SpsgCe': 1e204,
-        'OcsgCe': 1e507, 'NosgCe': 1e510, 'SgCe': 1e513, 'USgCe': 1e516, 'DSgCe': 1e519, 'TSgCe': 1e522,
-        'QdSgCe': 1e525, 'QnSgCe': 1e528, 'SxSgCe': 1e531, 'SpSgCe': 1e534, 'OcSgCe': 1e537, 'NoSgCe': 1e540,
-        'OgCe': 1e543, 'UOgCe': 1e546, 'DOgCe': 1e549, 'TOgCe': 1e552, 'QdOgCe': 1e555, 'QnOgCe': 1e558,
-        'SxOgCe': 1e561, 'SpOgCe': 1e564, 'OcOgCe': 1e567, 'NoOgCe': 1e570, 'NgCe': 1e573, 'UNgCe': 1e576,
-        'DNgCe': 1e579, 'TNgCe': 1e582, 'QdNgCe': 1e585, 'QnNgCe': 1e588, 'SxNgCe': 1e591, 'SpNgCe': 1e594,
-        'OcNgCe': 1e597, 'NoNgCe': 1e600, 'Du': 1e603,
-        'SpQd': 1e39, // Custom combination
-    };
-    return scales;
-};
-
-const scale = generateScaleMap();
-const scaleEntries = Object.entries(scale).sort(([, a], [, b]) => b - a);
-const lowerCaseScaleMap = Object.keys(scale).reduce((acc, key) => {
-    acc[key.toLowerCase()] = scale[key];
-    return acc;
-}, {});
-
-// Find suffixes that are the same when lowercased but different otherwise
-const seenLowerCase = new Set();
-const conflictingLowerCaseSuffixes = new Set();
-for (const key of Object.keys(scale)) {
-    const lowerKey = key.toLowerCase();
-    if (seenLowerCase.has(lowerKey)) {
-        conflictingLowerCaseSuffixes.add(lowerKey);
-    } else {
-        seenLowerCase.add(lowerKey);
-    }
-}
-
-
-const runesData = [
-    { name: 'Bloom', source: 'Color Rune', chance: 7.5e9, stats: '1k Boost Spheres + Talent Upgrade (Prisms Talent Tree)' },
-    { name: 'Aether', source: 'Polychrome Rune', chance: 1.5e10, stats: 'Rune Luck (MAX x10) + Talent Upgrade (Prisms Talent Tree, Hidden from a big rock on right side)' },
-    { name: 'Superstar', source: '5M Beginner', chance: 2.5e10, stats: 'x1M Energy (MAX x1NoNg) + Talent Upgrade (Hall of Fame, Location on center between both Runes, Rune Clone)' },
-    { name: 'Vexed', source: 'Polychrome Rune', chance: 5e10, stats: 'x1.05 Tickets (MAX x3) + Talent Upgrade (Realm 2, Hidden close of Cyro Rune on Right side from a floating island)' },
-    { name: 'Blizzard', source: 'Arctic Rune', chance: 1e11, stats: 'x1.05 Rune Bulk (MAX x1.3) + Ticket Perk (Rune Luck)' },
-    { name: 'Kingslayer', source: '5M Royal', chance: 2.5e11, stats: 'x25K Orbs (Exponential) | (MAX x1NoNg) + x1.25 Rune Luck (MAX x100) + x1.25 Rune Speed (MAX x100)', note: 'The <GUIDE> suggests alternating between grinding for Kingslayer, Mystery, and Thorn.' },
-    { name: 'Mystery', source: 'Basic Rune', chance: 1e12, stats: 'x1 Rune Bulk (MAX x5) + -0.1s RToken Cooldown (MAX -60s)', note: 'When grinding actively, this can be alternated with Kingslayer and Thorn.' },
-    { name: 'Thorn', source: 'Nature Rune', chance: 1e13, stats: 'Ticket Perks Upgrade (Rune Bulk) + x1 Rune Speed (MAX x25k) + x2.5 Tickets (MAX x10B)', note: 'When grinding actively, this can be alternated with Kingslayer and Mystery.' },
-    { name: 'Divinity', source: '5M Royal', chance: 7.5e16, stats: '+2 Rune Bulk (MAX +100k) + x1 Rune Luck (MAX x10)', note: 'The <GUIDE> suggests alternating between grinding for Divinity and Abyssium until both are maxed.' },
-    { name: 'Abyssium', source: 'Polychrome Rune', chance: 1.25e20, stats: 'x2.1 Tickets (MAX x10K) + x1.01 Rune Bulk (MAX x100)', note: 'The <GUIDE> suggests alternating between grinding for Abyssium and Divinity until both are maxed.' },
-    { name: 'Prosperity', source: '5M Royal', chance: 2.5e22, stats: '-1 Chest Chance (MAX -1/6k) + x1.01 Rune Speed (MAX x100K)' },
-    { name: 'Oscillon', source: 'Polychrome Rune', chance: 3.33e27, stats: 'x1.02 Rune Luck (MAX x1M) + ^1 Rune Bulk (MAX ^1.3)' },
-    { name: 'Hyper Finality', source: 'Basic Rune', chance: 7.5e32, stats: 'x1 Rune Speed (EXPONENTIAL) + Ticket Perks Upgrade', note: 'IMPORTANT: The <GUIDE> recommends turning OFF Rune Luck when grinding for this rune to focus your progress.' },
-    { name: 'Okay Garmin Save Video', source: 'Cryo Rune', chance: 1e42, stats: 'x1 Tickets (MAX x1SxDe)' },
-    { name: 'Gleam', source: 'Color Rune', chance: 1e47, stats: 'x1.01 Rune Speed (MAX x1K) + x1 Rune Bulk (MAX x10K)' },
-    { name: 'Shyft', source: 'Basic Rune', chance: 7.5e55, stats: '+1 Walkspeed (MAX 30) +7 Rune Bulk (MAX +500k) + New Talent (Behind the Basic Rune on island)' },
-    { name: 'Overlord', source: '5M Beginner', chance: 5e58, stats: 'x1.01 Energy (EXPONENTIAL) + +24 Rune Bulk (MAX +100M)' },
-    { name: 'Mirror', source: 'Arctic Rune', chance: 7.5e60, stats: 'x1.01 Rune Speed (MAX 50k) + x1 Rune Speed (MAX 500k)' },
-    { name: 'Oblivion', source: 'Polychrome Rune', chance: 5e73, stats: 'x1.02 Rune Bulk (MAX x50k) + New Talent' },
-    { name: 'Immortality', source: '5M Royal', chance: 2e82, stats: 'x2 Rune Bulk (EXPONENTIAL) (MAX x1B)' },
-    { name: 'Vanta', source: 'Color Rune', chance: 7e95, stats: 'x2 Rune Speed (EXPONENTIAL) (MAX 3M) + x1 Rune Bulk (MAX x3) + x2 Tickets (MAX 1DDe)' },
-    { name: 'Frostbite', source: 'Arctic Rune', chance: 3e103, stats: 'x1.01 Rune Speed (MAX x100k) + New Talent' },
-    { name: 'Odyssey', source: '5M Royal', chance: 1.5e109, stats: 'x1 Rune Bulk (EXPONENTIAL) + x1 Rune Bulk (MAX ???) + x1 Rune Speed (MAX ???)' },
-    { name: 'Destiny', source: '5M Royal', chance: 5e121, stats: 'x1 Rune Bulk (MAX x10K) + x1 Rune Speed (MAX x250)' },
-    { name: 'Squid', source: 'Nature Rune', chance: 1.5e130, stats: 'Ticket Perk (Rune Bulk) + x2 Rune Bulk (MAX ???) + x? Tickets (MAX ???)', note: 'The <GUIDE> suggests alternating between grinding for Squid and Array.' },
-    { name: 'Array', source: 'Basic Rune', chance: 1e135, stats: '+3.5k Rune Bulk (MAX + 25B) + x1 Rune Bulk (MAX x25) + x1 Tickets', note: 'The <GUIDE> suggests alternating between grinding for Array and Squid.' },
-    { name: 'Cyclone', source: 'Nature Rune', chance: 2.5e140, stats: '^1.2 Rune Bulk + x1K Rune Speed + Talent Upgrade (T1 area on a hill)' },
-    { name: 'Stray', source: 'Cryo Rune', chance: 1e160, stats: 'x1 Rune Speed [EXPONENTIAL] + x1 Tickets [EXPONENTIAL]' },
-    { name: 'Triarch', source: '5M Royal', chance: 1.5e165, stats: 'x1 Rune Speed + x1 Rune Speed + x1 Rune Speed' },
-    { name: 'Disarray', source: 'Basic Rune', chance: 7.5e174, stats: '+1 Rune Bulk (EXPONENTIAL) (MAX +1T) + x1 Rune Bulk (MAX x250)' },
-    { name: 'Bolt', source: 'Nature Rune', chance: 1.75e182, stats: 'x1 Rune Bulk (MAX x100) + x1 Rune Bulk (MAX x250) + New Talent' },
-    { name: 'Zephyr', source: 'Polychrome Rune', chance: 5e191, stats: 'x1 Rune Bulk (DUAL EXPONENTIAL) + x1.01 Rune Speed' },
-    { name: 'Whirl', source: 'Color Rune', chance: 1e204, stats: 'x1 Rune Speed + x1 Tickets' },
-    { name: 'Riptide', source: 'Nature Rune', chance: 1.5e205, stats: 'x1.01 Rune Speed + x1 Rune Speed + x1 Tickets [EXPONENTIAL]' },
-    { name: 'Cosmic Dust', source: 'Galactic Rune', chance: 1e207, stats: '+ x1 Tickets (MAX ???) + x1 Rune Speed (MAX ???)' },
-    { name: 'Star', source: 'Galactic Rune', chance: 2.5e208, stats: '+ x1 Tickets (MAX ???) + x1 Rune Speed (MAX ???) [BOTH EXPONENTIAL]' },
-    { name: 'Apex', source: 'Basic Rune', chance: 2.5e212, stats: 'x1 Rune Bulk [EXPONENTIAL] + x1K Rune Speed [EXPONENTIAL]' },
-    { name: 'Constellation', source: 'Galactic Rune', chance: 2.5e223, stats: 'x1 Rune Bulk (MAX x25) + x1 Rune Bulk (MAX x25) + New Talent' },
-    { name: 'Torrent', source: 'Nature Rune', chance: 2.5e228, stats: 'x1 Rune Speed + Ticket Perk Unlock + Ticket Perk Unlock' },
-    { name: 'Sorcerer', source: '5M Beginner', chance: 1e234, stats: 'x1 Rune Speed (MAXx100) + x1 Rune Speed (MAX x1K)+ x1 Tickets (MAX x50B)' },
-    { name: 'Planet', source: 'Galactic Rune', chance: 3.3e238, stats: '+75K Bulk (MAX ???) + ^1 Bulk [EXPONENTIAL] (MAX ???)' },
-    { name: 'Onyx', source: 'Color Rune', chance: 3.33e248, stats: 'x1 Rune Speed + x1 Rune Speed (EXPONENTIAL)' },
-    { name: 'Strix', source: 'Basic Rune', chance: 2.5e256, stats: 'x1.01 Rune Speed (MAX x3) + 1 new talent' },
-    { name: 'Liberty', source: '5M Royal', chance: 3.5e256, stats: 'x1 Rune Bulk + x1 Rune Speed + x1 Hail' },
-    { name: 'Rocket', source: 'Galactic Rune', chance: 1.5e260, stats: 'new talent + x1.5 Tickets (MAX x1Sx) + x1 Rune Speed [EXPONENTIAL] (MAX x100K)' },
-    { name: 'Vanguard', source: '5M Beginner', chance: 6.66e267, stats: 'x1 Rune Speed + x1 Rune Speed + x1 Rune Bulk' },
-];
-
 // --- Analytics (Connected) ---
-/**
- * Sends a tracking event using the global gtag function.
- * @param {string} eventName - The name of the event.
- * @param {object} eventParams - The parameters for the event.
- */
 const trackEvent = (eventName, eventParams) => {
-    // Check if the gtag function exists on the window object
     if (typeof window.gtag === 'function') {
         window.gtag('event', eventName, eventParams);
     } else {
-        // Fallback for development or if GA fails to load
         console.log(`Analytics Event (GA not found): ${eventName}`, eventParams);
     }
 };
 
 
 // --- Helper Functions ---
+const foreverQuotes = [
+    "Heat death of the universe",
+    "Basically forever",
+    "Just don't even try",
+    "An eternity or two",
+    "Beyond comprehension"
+];
+
 function formatTime(totalSeconds) {
     if (totalSeconds < 0 || !isFinite(totalSeconds)) return '...';
     if (totalSeconds < 1) return 'Instant';
+
+    const oneHundredYearsInSeconds = 100 * 31536000;
+    if (totalSeconds > oneHundredYearsInSeconds) {
+        return foreverQuotes[Math.floor(Math.random() * foreverQuotes.length)];
+    }
+
     const units = [{ l: 'year', s: 31536000 }, { l: 'day', s: 86400 }, { l: 'hour', s: 3600 }, { l: 'minute', s: 60 }, { l: 'second', s: 1 }];
     let remaining = totalSeconds;
     const parts = [];
@@ -185,112 +67,26 @@ function formatTime(totalSeconds) {
     return parts.slice(0, 3).join(', ');
 }
 
-function formatNumber(num) {
-    if (typeof num !== 'number' || !isFinite(num)) return '0';
-    for (const [suffix, value] of scaleEntries) {
-        if (value > 0 && num >= value) {
-            const scaledNum = (num / value).toPrecision(3);
-            return `${parseFloat(scaledNum)} ${suffix}`;
-        }
-    }
-    return num.toPrecision(3);
-}
-
-function formatChance(chance) {
-    const scientific = `(${chance.toExponential(0)})`;
-    return `1 / ${formatNumber(chance)} ${scientific}`;
-}
-
-/**
- * Parses a string like "1.5M" or "100QdVt" into a number, handling case-sensitivity for ambiguous suffixes.
- * @param {string} input - The string to parse.
- * @returns {{value: number, warning: string|null}} The parsed numeric value and any warning.
- */
-function parseRpsInput(input) {
-    if (typeof input !== 'string' || !input) return { value: 0, warning: null };
-    const cleanedInput = input.trim();
-
-    const match = cleanedInput.match(/^(\d*\.?\d+)\s*([a-zA-Z]+)$/);
-
-    if (match) {
-        const numPart = parseFloat(match[1]);
-        const scalePart = match[2]; // Keep original case
-
-        // 1. Try case-sensitive match first
-        if (scale[scalePart]) {
-            return { value: numPart * scale[scalePart], warning: null };
-        }
-
-        // 2. If no direct match, check for ambiguity
-        const lowerScalePart = scalePart.toLowerCase();
-        if (conflictingLowerCaseSuffixes.has(lowerScalePart)) {
-            const options = Object.keys(scale).filter(k => k.toLowerCase() === lowerScalePart).join(', ');
-            const warningMessage = `Warning: '${scalePart}' is ambiguous. Use one of these case-sensitive options: ${options}.`;
-            return { value: 0, warning: warningMessage };
-        }
-
-        // 3. If not ambiguous, try case-insensitive match
-        const multiplier = lowerCaseScaleMap[lowerScalePart];
-        if (multiplier) {
-            return { value: numPart * multiplier, warning: null };
-        }
-    }
-
-    const plainNumber = parseFloat(cleanedInput);
-    return isNaN(plainNumber) ? { value: 0, warning: null } : { value: plainNumber, warning: null };
-}
-
-
 // --- Custom Components ---
-const StrategyNote = ({ note }) => {
-    if (!note) return null;
-
-    const parts = note.split('<GUIDE>');
-
-    return (
-        <div className="bg-yellow-900/40 border border-yellow-500/30 text-yellow-300 text-sm p-3 mt-3 rounded-lg flex items-start gap-3">
-            <span className="text-lg leading-none mt-0.5">💡</span>
-            <p>
-                <strong className="font-bold text-yellow-200">Strategy Tip:</strong>{' '}
-                {parts.map((part, index) => (
-                    <React.Fragment key={index}>
-                        {part}
-                        {index < parts.length - 1 && (
-                            <a
-                                href={guideLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="underline font-semibold text-yellow-200 hover:text-cyan-300 transition-colors"
-                            >
-                                guide
-                            </a>
-                        )}
-                    </React.Fragment>
-                ))}
-            </p>
-        </div>
-    );
-};
-
-const TargetCalculator = () => {
+const TargetCalculator = ({ runesData, formatNumber }) => {
     const [targetRuneName, setTargetRuneName] = useState(runesData[0].name);
     const [targetTime, setTargetTime] = useState('30');
     const [targetTimeUnit, setTargetTimeUnit] = useState('60'); // minutes
 
     const requiredRps = useMemo(() => {
         const rune = runesData.find(r => r.name === targetRuneName);
-        if (!rune) return 0;
+        if (!rune || typeof rune.chance !== 'number') return 0;
         const timeInSeconds = parseFloat(targetTime) * parseFloat(targetTimeUnit);
         if (timeInSeconds <= 0) return Infinity;
         return rune.chance / timeInSeconds;
-    }, [targetRuneName, targetTime, targetTimeUnit]);
+    }, [targetRuneName, targetTime, targetTimeUnit, runesData]);
 
     return (
         <div className="p-1">
             <h2 className="text-2xl text-center font-bold text-cyan-400 mb-4">"What If?" Target Calculator</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <select value={targetRuneName} onChange={e => setTargetRuneName(e.target.value)} className="bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500">
-                    {runesData.map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
+                    {runesData.filter(r => typeof r.chance === 'number').map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
                 </select>
                 <input type="number" value={targetTime} onChange={e => setTargetTime(e.target.value)} className="bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="Time" />
                 <select value={targetTimeUnit} onChange={e => setTargetTimeUnit(e.target.value)} className="bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500">
@@ -330,9 +126,31 @@ const ChangelogModal = ({ onClose }) => {
     );
 };
 
+const RuneTag = ({ tag }) => {
+    const tagStyles = {
+        limited: 'bg-red-500/20 text-red-300 border-red-500/30',
+        hidden: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+        exponential: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+        default: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
+    };
+    const style = tagStyles[tag.toLowerCase()] || tagStyles.default;
+    return (
+        <span className={`text-xs font-semibold uppercase px-2 py-1 rounded-full border ${style}`}>
+            {tag}
+        </span>
+    );
+};
+
+const LoadingSpinner = () => (
+    <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-cyan-500"></div>
+    </div>
+);
+
 
 // --- Main Application Component ---
 export default function App() {
+    const [appData, setAppData] = useState({ runes: null, scales: null, status: 'loading', error: null });
     const [activeTab, setActiveTab] = useState('calculator');
     const [rawRpsInput, setRawRpsInput] = useState('1M');
     const [hideInstant, setHideInstant] = useState(true);
@@ -342,10 +160,114 @@ export default function App() {
     const [isChangelogVisible, setIsChangelogVisible] = useState(false);
     const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
-    // Refs for managing analytics tracking debounce
     const debounceTimeoutRef = useRef(null);
     const rpsDebounceTimeoutRef = useRef(null);
     const isInitialMount = useRef(true);
+
+    // Effect to fetch data from external GitHub links
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [runesResponse, scalesResponse] = await Promise.all([
+                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json'),
+                    fetch('https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json')
+                ]);
+                if (!runesResponse.ok || !scalesResponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const runes = await runesResponse.json();
+                const scales = await scalesResponse.json();
+
+                setAppData({ runes, scales, status: 'loaded', error: null });
+            } catch (error) {
+                console.error("Failed to fetch data from GitHub.", error);
+                setAppData({ runes: [], scales: {}, status: 'error', error: 'Failed to load data from GitHub. Please check your connection and try again.' });
+            }
+        };
+        fetchData();
+    }, []);
+
+    // Memoize scale-dependent calculations
+    const scaleUtils = useMemo(() => {
+        if (appData.status !== 'loaded') return null;
+        const { scales } = appData;
+        const scaleEntries = Object.entries(scales).sort(([, a], [, b]) => b - a);
+        const lowerCaseScaleMap = Object.keys(scales).reduce((acc, key) => {
+            acc[key.toLowerCase()] = scales[key];
+            return acc;
+        }, {});
+        const seenLowerCase = new Set();
+        const conflictingLowerCaseSuffixes = new Set();
+        for (const key of Object.keys(scales)) {
+            const lowerKey = key.toLowerCase();
+            if (seenLowerCase.has(lowerKey)) {
+                conflictingLowerCaseSuffixes.add(lowerKey);
+            } else {
+                seenLowerCase.add(lowerKey);
+            }
+        }
+        return { scales, scaleEntries, lowerCaseScaleMap, conflictingLowerCaseSuffixes };
+    }, [appData]);
+
+    // Helper functions that depend on scaleUtils
+    const formatNumber = useMemo(() => (num) => {
+        if (!scaleUtils || typeof num !== 'number' || !isFinite(num)) return '0';
+        for (const [suffix, value] of scaleUtils.scaleEntries) {
+            if (value > 0 && num >= value) {
+                const scaledNum = (num / value).toPrecision(3);
+                return `${parseFloat(scaledNum)} ${suffix}`;
+            }
+        }
+        return num.toPrecision(3);
+    }, [scaleUtils]);
+
+    const parseRpsInput = useMemo(() => (input) => {
+        if (!scaleUtils || typeof input !== 'string' || !input) return { value: 0, warning: null };
+        const cleanedInput = input.trim();
+        const match = cleanedInput.match(/^(\d*\.?\d+)\s*([a-zA-Z]+)$/);
+
+        if (match) {
+            const numPart = parseFloat(match[1]);
+            const scalePart = match[2];
+
+            if (scaleUtils.scales[scalePart]) {
+                return { value: numPart * scaleUtils.scales[scalePart], warning: null };
+            }
+
+            const lowerScalePart = scalePart.toLowerCase();
+            if (scaleUtils.conflictingLowerCaseSuffixes.has(lowerScalePart)) {
+                const options = Object.keys(scaleUtils.scales).filter(k => k.toLowerCase() === lowerScalePart).join(', ');
+                const warningMessage = `Warning: '${scalePart}' is ambiguous. Use one of these case-sensitive options: ${options}.`;
+                return { value: 0, warning: warningMessage };
+            }
+
+            const multiplier = scaleUtils.lowerCaseScaleMap[lowerScalePart];
+            if (multiplier) {
+                return { value: numPart * multiplier, warning: null };
+            }
+        }
+        const plainNumber = parseFloat(cleanedInput);
+        return isNaN(plainNumber) ? { value: 0, warning: null } : { value: plainNumber, warning: null };
+    }, [scaleUtils]);
+
+    const formatChance = useMemo(() => (rune) => {
+        const { chance } = rune;
+        if (typeof chance === 'object' && chance.unit) {
+            return `${formatNumber(chance.value)} ${chance.unit}`;
+        }
+        if (typeof chance === 'number') {
+            const scientific = `(${chance.toExponential(0)})`;
+            return `1 / ${formatNumber(chance)} ${scientific}`;
+        }
+        return 'N/A';
+    }, [formatNumber]);
+
+    function getNumericChance(rune) {
+        if (typeof rune.chance === 'number') {
+            return rune.chance;
+        }
+        return Infinity;
+    }
 
     useEffect(() => {
         const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
@@ -363,22 +285,23 @@ export default function App() {
     }, [rawRpsInput]);
 
     const { rps, rpsWarning } = useMemo(() => {
+        if (!scaleUtils) return { rps: 0, rpsWarning: null };
         const { value, warning } = parseRpsInput(rawRpsInput);
         return { rps: value, rpsWarning: warning };
-    }, [rawRpsInput]);
+    }, [rawRpsInput, scaleUtils, parseRpsInput]);
 
     const customRuneDetails = useMemo(() => {
+        if (!scaleUtils) return { parsedChance: 0, time: Infinity };
         const { value: parsedChance } = parseRpsInput(customRuneChance);
         const time = rps > 0 ? parsedChance / rps : Infinity;
         return { parsedChance, time };
-    }, [customRuneChance, rps]);
+    }, [customRuneChance, rps, scaleUtils, parseRpsInput]);
 
     const customRuneConversion = useMemo(() => {
+        if (!scaleUtils) return '';
         const input = customRuneChance.trim();
         if (!input) return '';
-
         const isScientific = /e[+-]?\d/i.test(input);
-
         if (isScientific) {
             const num = parseFloat(input);
             if (isNaN(num)) return '';
@@ -388,87 +311,58 @@ export default function App() {
             if (parsedValue === 0 || !isFinite(parsedValue) || String(parsedValue) === input) return '';
             return `(${parsedValue.toExponential()})`;
         }
-    }, [customRuneChance]);
+    }, [customRuneChance, scaleUtils, formatNumber, parseRpsInput]);
 
     const { processedRunes, nextUpgradeName } = useMemo(() => {
+        if (appData.status !== 'loaded') return { processedRunes: [], nextUpgradeName: null };
+
         let nextUpgrade = null;
-        const filtered = runesData
+        const filtered = appData.runes
             .map(rune => ({
                 ...rune,
-                time: rps > 0 ? rune.chance / rps : Infinity,
+                time: rps > 0 ? getNumericChance(rune) / rps : Infinity,
             }))
             .filter(rune => {
                 const matchesFilter = rune.name.toLowerCase().includes(runeFilter.toLowerCase()) || rune.source.toLowerCase().includes(runeFilter.toLowerCase());
                 const isInstant = rune.time < 1;
                 return matchesFilter && (!hideInstant || !isInstant);
             })
-            .sort((a, b) => sortOrder === 'asc' ? a.chance - b.chance : b.chance - a.chance);
+            .sort((a, b) => {
+                const chanceA = getNumericChance(a);
+                const chanceB = getNumericChance(b);
+                return sortOrder === 'asc' ? chanceA - chanceB : chanceB - chanceA;
+            });
 
         if (sortOrder === 'asc') {
             nextUpgrade = filtered.find(r => r.time >= 1 && r.time < 3600) || null;
         }
 
         return { processedRunes: filtered, nextUpgradeName: nextUpgrade?.name };
-    }, [rps, hideInstant, sortOrder, runeFilter]);
+    }, [rps, hideInstant, sortOrder, runeFilter, appData]);
 
-    // Effect for tracking the next target rune with a debounce
     useEffect(() => {
-        // Don't run on the initial mount.
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
-
-        // Clear the previous timeout if the user is still typing.
-        if (debounceTimeoutRef.current) {
-            clearTimeout(debounceTimeoutRef.current);
-        }
-
-        // Set a new timeout to track the event after a delay of 1 second.
+        if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
         debounceTimeoutRef.current = setTimeout(() => {
             if (nextUpgradeName) {
-                trackEvent('next_target_rune_selected', {
-                    rune_name: nextUpgradeName,
-                });
+                trackEvent('next_target_rune_selected', { rune_name: nextUpgradeName });
             }
-        }, 1000); // 1-second delay
+        }, 1000);
+        return () => { if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current); };
+    }, [nextUpgradeName]);
 
-        // Cleanup function to clear the timeout if the component unmounts.
-        return () => {
-            if (debounceTimeoutRef.current) {
-                clearTimeout(debounceTimeoutRef.current);
-            }
-        };
-    }, [nextUpgradeName]); // This effect runs whenever nextUpgradeName changes.
-
-    // Effect for tracking the RPS value with a debounce
     useEffect(() => {
-        // Don't run on the initial mount.
-        if (isInitialMount.current) {
-            return;
-        }
-
-        // Clear the previous timeout if the user is still typing.
-        if (rpsDebounceTimeoutRef.current) {
-            clearTimeout(rpsDebounceTimeoutRef.current);
-        }
-
-        // Set a new timeout to track the event after a delay.
+        if (isInitialMount.current) return;
+        if (rpsDebounceTimeoutRef.current) clearTimeout(rpsDebounceTimeoutRef.current);
         rpsDebounceTimeoutRef.current = setTimeout(() => {
-            // Only track if the RPS is a valid positive number and there are no warnings.
             if (rps > 0 && !rpsWarning) {
-                trackEvent('rps_value_set', {
-                    value: rps
-                });
+                trackEvent('rps_value_set', { value: rps });
             }
-        }, 1000); // 1-second delay
-
-        // Cleanup function to clear the timeout if the component unmounts.
-        return () => {
-            if (rpsDebounceTimeoutRef.current) {
-                clearTimeout(rpsDebounceTimeoutRef.current);
-            }
-        };
+        }, 1000);
+        return () => { if (rpsDebounceTimeoutRef.current) clearTimeout(rpsDebounceTimeoutRef.current); };
     }, [rps, rpsWarning]);
 
     const TabButton = ({ tabName, label }) => {
@@ -486,6 +380,10 @@ export default function App() {
         );
     };
 
+    if (appData.status === 'loading') {
+        return <LoadingSpinner />;
+    }
+
     return (
         <div className="bg-gray-900 text-gray-200 min-h-screen font-sans p-4 sm:p-6 lg:p-8">
             {isChangelogVisible && <ChangelogModal onClose={() => setIsChangelogVisible(false)} />}
@@ -499,11 +397,17 @@ export default function App() {
                             🚀 For a wealth of extra info, check out the{' '}
                             <a href={guideLink} target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-white">
                                 Comprehensive Google Doc
-                            </a>
-                            !
+                            </a>!
                         </p>
                     </div>
                 </header>
+
+                {appData.error && (
+                    <div className="bg-red-900/50 border border-red-500/30 text-red-300 text-center p-3 rounded-lg mb-6">
+                        <p>{appData.error}</p>
+                    </div>
+                )}
+
 
                 <div className="flex border-b border-gray-700 mb-0">
                     <TabButton tabName="calculator" label="Rune Calculator" />
@@ -562,21 +466,13 @@ export default function App() {
                                 <div className="bg-purple-900/50 border-2 border-dashed border-purple-500/60 p-5 rounded-lg mb-6">
                                     <div className="text-center mb-4">
                                         <h3 className="text-xl font-bold text-purple-200">Custom Rune Calculator</h3>
-                                        <p className="text-sm text-purple-300 mt-1">LeftySix is too slow, so here's a box for new runes.</p>
-                                        <p className="text-xs text-purple-400 mt-1">(This is a utility, not a real rune)</p>
+                                        <p className="text-sm text-purple-300 mt-1">For new or unlisted runes.</p>
                                     </div>
                                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                                         <div className="flex-1 text-center sm:text-left">
                                             <label htmlFor="custom-chance" className="block text-sm font-medium text-purple-200 mb-1">Enter Rune Chance (1 in...)</label>
                                             <div className="flex items-center gap-2 justify-center sm:justify-start">
-                                                <input
-                                                    id="custom-chance"
-                                                    type="text"
-                                                    value={customRuneChance}
-                                                    onChange={(e) => setCustomRuneChance(e.target.value)}
-                                                    className="bg-gray-700/80 text-white p-2 rounded-md border border-gray-600 focus:border-cyan-500 w-40 text-center"
-                                                    placeholder="e.g., 1e300"
-                                                />
+                                                <input id="custom-chance" type="text" value={customRuneChance} onChange={(e) => setCustomRuneChance(e.target.value)} className="bg-gray-700/80 text-white p-2 rounded-md border border-gray-600 focus:border-cyan-500 w-40 text-center" placeholder="e.g., 1e300" />
                                                 <span className="text-gray-400 text-sm">{customRuneConversion}</span>
                                             </div>
                                         </div>
@@ -592,23 +488,26 @@ export default function App() {
                                 {processedRunes.map((rune) => {
                                     const isNextUpgrade = rune.name === nextUpgradeName;
                                     const highlightClass = isNextUpgrade ? 'border-yellow-400 shadow-yellow-400/20 shadow-lg' : 'border-gray-700';
+                                    const isSpecialChance = typeof rune.chance === 'object';
 
                                     return (
                                         <div key={rune.name} className={`bg-gray-900/50 backdrop-blur-sm p-5 rounded-lg shadow-md border transition-all duration-300 ${highlightClass}`}>
                                             {isNextUpgrade && <div className="text-yellow-400 font-bold mb-2 text-sm">Next Target (&lt; 1 Hour)</div>}
                                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                                 <div className="flex-1 min-w-0">
-                                                    <h2 className="text-2xl font-bold text-white">{rune.name}</h2>
+                                                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                                                        <h2 className="text-2xl font-bold text-white">{rune.name}</h2>
+                                                        {rune.tags && rune.tags.map(tag => <RuneTag key={tag} tag={tag} />)}
+                                                    </div>
                                                     <p className="text-sm text-gray-400">{rune.source}</p>
-                                                    <p className="text-sm text-cyan-400">{formatChance(rune.chance)}</p>
+                                                    <p className="text-sm text-cyan-400">{formatChance(rune)}</p>
                                                     <p className="text-sm text-green-400 mt-2">
                                                         <strong className="font-semibold">Gives: </strong>
-                                                        {rune.stats}
+                                                        {rune.statsDisplay}
                                                     </p>
-                                                    <StrategyNote note={rune.note} />
                                                 </div>
-                                                <div className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px]">
-                                                    {formatTime(rune.time)}
+                                                <div className={`text-lg font-semibold px-4 py-2 rounded-lg text-center w-full sm:w-auto min-w-[150px] ${isSpecialChance ? 'bg-purple-500/10 border border-purple-500/30 text-purple-300' : 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-300'}`}>
+                                                    {isSpecialChance ? 'Special Cost' : formatTime(rune.time)}
                                                 </div>
                                             </div>
                                         </div>
@@ -617,8 +516,8 @@ export default function App() {
                             </div>
                         </div>
                     )}
-                    {activeTab === 'whatif' && (
-                        <TargetCalculator />
+                    {activeTab === 'whatif' && appData.status === 'loaded' && (
+                        <TargetCalculator runesData={appData.runes} formatNumber={formatNumber} />
                     )}
                 </div>
 
