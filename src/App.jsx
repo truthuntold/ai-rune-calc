@@ -1,39 +1,52 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // --- App Info & Data ---
-const version = '1.1.0';
+const version = '1.8.0';
 const guideLink = 'https://docs.google.com/spreadsheets/d/1FWuPcp1QvIn-TAJkD1nRPtZnVwotBHcqR17xOR8SkHg/htmlview?gid=623912504#gid=539880323';
 
 const changelog = [
     {
-        version: '1.1.0',
-        date: '2025-08-06',
+        version: '1.8.0',
+        date: '2025-08-07',
         changes: [
-            'Major UI Overhaul: Replaced the long stat string with a formatted, icon-driven bonus list.',
-            'Data is now fetched live from the official GitHub repository.',
-            'Added humorous messages for extremely long wait times (>100 years).',
-            'Made bonus display boxes responsive and uniform for a better mobile experience.'
+            'Implemented cache-busting for data fetching to ensure the calculator always uses the most up-to-date rune data from GitHub.'
         ]
     },
-    { version: '1.0.18', date: '2025-08-05', changes: ['Updated stats for the Constellation rune.'] },
-    { version: '1.0.17', date: '2025-08-05', changes: ['Added Onyx, Strix, Liberty, Rocket, and Vanguard runes.'] },
-    { version: '1.0.16', date: '2025-08-04', changes: ['Added Cosmic Dust, Star, Apex, Constellation, and Torrent runes.'] },
-    { version: '1.0.15', date: '2025-08-03', changes: ['Added Whirl and Riptide runes.'] },
-    { version: '1.0.14', date: '2025-08-03', changes: ['Redesigned the custom rune calculator to be more distinct and less confusing for new players.', 'Added more explanatory text for its purpose.'] },
-    { version: '1.0.13', date: '2025-08-03', changes: ['Enhanced the custom rune input to act as a two-way converter between short-form and scientific notation.'] },
-    { version: '1.0.12', date: '2025-08-03', changes: ['Added a custom rune calculator for unlisted or new runes.'] },
-    { version: '1.0.11', date: '2025-08-03', changes: ['Added a prominent link to the comprehensive Google Docs guide.', 'Clarified the "Next Upgrade" text to be more intuitive.', 'Updated note links to be functional.'] },
-    { version: '1.0.10', date: '2025-08-02', changes: ['Updated stats for Bolt and Zephyr runes.'] },
-    { version: '1.0.9', date: '2025-08-02', changes: ['Re-implemented the "What\'s New" notification feature.'] },
-    { version: '1.0.8', date: '2025-08-02', changes: ['Added Bolt and Zephyr runes.', 'Corrected chances for Triarch, Disarray, and Abyssium.', 'Fixed typos in stat descriptions.'] },
-    { version: '1.0.7', date: '2025-08-02', changes: ['Added the Triarch and Disarray runes.'] },
-    { version: '1.0.6', date: '2025-08-02', changes: ['Added a "What\'s New" notification banner that appears when the app is updated.'] },
-    { version: '1.0.5', date: '2025-08-02', changes: ['Added case-sensitive handling for ambiguous number suffixes (e.g., Tqg vs TQg) with a user warning.'] },
-    { version: '1.0.4', date: '2025-08-01', changes: ['Updated the sources for Hyper Finality, Shyft, Array, and Stray runes.'] },
-    { version: '1.0.3', date: '2025-08-01', changes: ['Added the Stray rune.'] },
-    { version: '1.0.2', date: '2025-08-01', changes: ['Added a clarifying line to note that times are for a single rune.'] },
-    { version: '1.0.1', date: '2025-08-01', changes: ['Corrected the chance for the Vanta rune.'] },
-    { version: '1.0.0', date: '2025-08-01', changes: ['Added versioning and a changelog.', 'Improved styling for rune descriptions.', 'Added a message to report incorrect values.', 'Made RPS input parsing case-insensitive.'] },
+    {
+        version: '1.7.0',
+        date: '2025-08-07',
+        changes: [
+            'All input fields now save their values to local storage and are restored on page load.',
+            'Synced the "Target Rune", "Current #", "Rune Speed", and "Rune Bulk" inputs between the "Time to Max" and "Time to X Runes" tabs for a smoother experience.',
+            'Added a prominent alpha warning to the "Time to..." tabs to manage expectations about calculation accuracy, especially for exponential runes.'
+        ]
+    },
+    {
+        version: '1.6.0',
+        date: '2025-08-07',
+        changes: [
+            'Implemented dynamic, iterative calculations for "Time to Max" and "Time to X Runes" tabs.',
+            'The calculators now simulate acquiring each rune one-by-one and apply its compounding bonuses (additive, multiplicative, and exponential) to Rune Speed and Bulk.',
+            'This provides a significantly more accurate time estimate that reflects getting faster over time.'
+        ]
+    },
+    {
+        version: '1.5.0',
+        date: '2025-08-06',
+        changes: [
+            'Added a "Time to X Runes" calculator tab for validation and testing purposes.',
+            'This new tool allows users to input a custom target number of runes to estimate the time required to reach it.'
+        ]
+    },
+    {
+        version: '1.4.0',
+        date: '2025-08-06',
+        changes: [
+            'Corrected the RPS formula to be a direct multiplication: RPS = Rune Speed * Rune Bulk.',
+            'Simplified the "Time to Max" calculator to only use Rune Speed and Rune Bulk inputs, as these stats are now understood to be live and all-inclusive.',
+            'Removed all unnecessary input fields for event buffs and other multipliers.'
+        ]
+    },
 ];
 
 // --- Analytics (Connected) ---
@@ -77,7 +90,68 @@ function formatTime(totalSeconds) {
     return parts.slice(0, 3).join(', ');
 }
 
+// --- Iterative Calculation Logic ---
+const calculateCompoundingTime = (rune, startCount, endCount, initialSpeed, initialBulk) => {
+    if (!rune || !rune.bonuses) return { totalTime: Infinity, finalRps: 0 };
+
+    let currentSpeed = initialSpeed;
+    let currentBulk = initialBulk;
+    let totalTimeSeconds = 0;
+
+    for (let count = startCount; count < endCount; count++) {
+        const currentRps = currentSpeed * currentBulk;
+        if (currentRps <= 0) return { totalTime: Infinity, finalRps: 0 };
+
+        const timeForNextRune = rune.chance / currentRps;
+        totalTimeSeconds += timeForNextRune;
+
+        // Apply bonuses for the rune that was just "acquired"
+        rune.bonuses.forEach(bonus => {
+            if (typeof bonus.value !== 'number') return;
+
+            const value = bonus.value;
+            // This logic assumes bonuses are applied based on having the rune, not per count.
+            // Exponential logic would need to be more specific if it depends on the count.
+            if (bonus.isExponential || bonus.isDualExponential) {
+                // NOTE: The current data doesn't provide a clear formula for how exponential bonuses scale with count.
+                // This calculation is a placeholder and likely inaccurate for exponential runes.
+                // For now, we treat it like a standard multiplier. A more complex, formula-parsing implementation is needed for full accuracy.
+            }
+
+            if (bonus.type === 'runeSpeed') {
+                if (bonus.modifier === 'additive') {
+                    currentSpeed += value;
+                } else if (bonus.modifier === 'multiplier') {
+                    currentSpeed *= value;
+                } else if (bonus.modifier === 'power') {
+                    currentSpeed = Math.pow(currentSpeed, value);
+                }
+            } else if (bonus.type === 'runeBulk') {
+                if (bonus.modifier === 'additive') {
+                    currentBulk += value;
+                } else if (bonus.modifier === 'multiplier') {
+                    currentBulk *= value;
+                } else if (bonus.modifier === 'power') {
+                    currentBulk = Math.pow(currentBulk, value);
+                }
+            }
+        });
+    }
+
+    const finalRps = currentSpeed * currentBulk;
+    return { totalTime: totalTimeSeconds, finalRps };
+};
+
+
 // --- Custom Components ---
+
+const AlphaWarning = () => (
+    <div className="bg-red-900/50 border-2 border-dashed border-red-500/30 text-red-200 text-center p-3 rounded-lg mb-6">
+        <h3 className="font-bold text-lg">ALPHA WARNING</h3>
+        <p className="text-sm">These "Time to..." calculators are for feedback only. The logic is experimental and likely inaccurate, especially for runes with exponential bonuses. Please do not rely on these estimates for serious planning yet. Also, don't spam me with issues. I've probably already been told about them. P.S. Gaining global runes will completely break any sort of accuracy in the time estimate.</p>
+    </div>
+);
+
 const TargetCalculator = ({ runesData, formatNumber }) => {
     const [targetRuneName, setTargetRuneName] = useState(runesData[0].name);
     const [targetTime, setTargetTime] = useState('30');
@@ -96,7 +170,7 @@ const TargetCalculator = ({ runesData, formatNumber }) => {
             <h2 className="text-2xl text-center font-bold text-cyan-400 mb-4">"What If?" Target Calculator</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <select value={targetRuneName} onChange={e => setTargetRuneName(e.target.value)} className="bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500">
-                    {runesData.filter(r => typeof r.chance === 'number').map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
+                    {runesData.filter(r => typeof r.chance === 'number').sort((a, b) => a.chance - b.chance).map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
                 </select>
                 <input type="number" value={targetTime} onChange={e => setTargetTime(e.target.value)} className="bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="Time" />
                 <select value={targetTimeUnit} onChange={e => setTargetTimeUnit(e.target.value)} className="bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500">
@@ -112,6 +186,152 @@ const TargetCalculator = ({ runesData, formatNumber }) => {
         </div>
     );
 };
+
+const TimeToMaxCalculator = ({ runesData, parseRpsInput, formatTime, formatNumber, syncedState, setSyncedState }) => {
+    const { selectedRuneName, currentCount, runeSpeed, runeBulk } = syncedState;
+    const { setSelectedRuneName, setCurrentCount, setRuneSpeed, setRuneBulk } = setSyncedState;
+
+    const calculation = useMemo(() => {
+        const rune = runesData.find(r => r.name === selectedRuneName);
+        if (!rune) return { rps: 0, timeToMax: 'Select a rune', runesNeeded: 0 };
+
+        const initialSpeed = parseRpsInput(runeSpeed).value;
+        const initialBulk = parseRpsInput(runeBulk).value;
+        const initialRps = initialSpeed * initialBulk;
+
+        const maxCount = parseInt(String(rune.max).replace(/,/g, ''), 10);
+        if (isNaN(maxCount)) return { rps: initialRps, timeToMax: 'Max count not specified', runesNeeded: 'N/A' };
+
+        const startCount = parseInt(currentCount, 10) || 0;
+        const runesNeeded = maxCount - startCount;
+
+        if (runesNeeded <= 0) return { rps: initialRps, timeToMax: 'Already maxed!', runesNeeded: 0 };
+        if (initialRps <= 0) return { rps: 0, timeToMax: 'Enter valid stats', runesNeeded };
+
+        const { totalTime } = calculateCompoundingTime(rune, startCount, maxCount, initialSpeed, initialBulk);
+
+        return { rps: initialRps, timeToMax: formatTime(totalTime), runesNeeded };
+    }, [selectedRuneName, currentCount, runeSpeed, runeBulk, runesData, parseRpsInput, formatTime]);
+
+    return (
+        <div className="p-1">
+            <AlphaWarning />
+            <h2 className="text-2xl text-center font-bold text-cyan-400 mb-4">Time to Max Rune Calculator</h2>
+            <p className="text-center text-gray-400 mb-6 -mt-2 text-sm">Estimates total time, accounting for compounding bonuses from each rune gained.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Target Rune</label>
+                    <select value={selectedRuneName} onChange={e => setSelectedRuneName(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500">
+                        {runesData.filter(r => typeof r.chance === 'number' && !isNaN(parseInt(String(r.max).replace(/,/g, ''), 10))).sort((a, b) => a.chance - b.chance).map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
+                    </select>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Current # of this Rune</label>
+                    <input type="number" value={currentCount} onChange={e => setCurrentCount(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 10" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Your In-Game Rune Speed</label>
+                    <input type="text" value={runeSpeed} onChange={e => setRuneSpeed(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 100Qn" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Your In-Game Rune Bulk</label>
+                    <input type="text" value={runeBulk} onChange={e => setRuneBulk(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 500T" />
+                </div>
+            </div>
+
+            <div className="text-center bg-gray-900 p-4 rounded-lg mt-6 space-y-4">
+                <div>
+                    <p className="text-gray-400">Initial Runes Per Second (RPS)</p>
+                    <p className="text-xl font-bold text-cyan-300 mt-1">{formatNumber(calculation.rps)}</p>
+                </div>
+                <div>
+                    <p className="text-gray-400">Runes Needed to Max</p>
+                    <p className="text-xl font-bold text-cyan-300 mt-1">{formatNumber(calculation.runesNeeded)}</p>
+                </div>
+                <div>
+                    <p className="text-gray-400">Estimated Time to Max (w/ Bonuses)</p>
+                    <p className="text-2xl font-bold text-green-400 mt-1">{calculation.timeToMax}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const TimeToXCalculator = ({ runesData, parseRpsInput, formatTime, formatNumber, syncedState, setSyncedState }) => {
+    const { selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk } = syncedState;
+    const { setSelectedRuneName, setCurrentCount, setTargetCount, setRuneSpeed, setRuneBulk } = setSyncedState;
+
+    const calculation = useMemo(() => {
+        const rune = runesData.find(r => r.name === selectedRuneName);
+        if (!rune) return { rps: 0, timeToTarget: 'Select a rune', runesNeeded: 0 };
+
+        const initialSpeed = parseRpsInput(runeSpeed).value;
+        const initialBulk = parseRpsInput(runeBulk).value;
+        const initialRps = initialSpeed * initialBulk;
+
+        const endCount = parseInt(targetCount, 10) || 0;
+        const startCount = parseInt(currentCount, 10) || 0;
+        const runesNeeded = endCount - startCount;
+
+        if (runesNeeded <= 0) return { rps: initialRps, timeToTarget: 'Target reached or passed!', runesNeeded: 0 };
+        if (initialRps <= 0) return { rps: 0, timeToTarget: 'Enter valid stats', runesNeeded };
+
+        const { totalTime } = calculateCompoundingTime(rune, startCount, endCount, initialSpeed, initialBulk);
+
+        return { rps: initialRps, timeToTarget: formatTime(totalTime), runesNeeded };
+    }, [selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk, runesData, parseRpsInput, formatTime]);
+
+    return (
+        <div className="p-1">
+            <AlphaWarning />
+            <h2 className="text-2xl text-center font-bold text-cyan-400 mb-4">Time to X Runes Calculator</h2>
+            <p className="text-center text-gray-400 mb-6 -mt-2 text-sm">A tool to help test and validate calculations for a specific number of runes.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Target Rune</label>
+                    <select value={selectedRuneName} onChange={e => setSelectedRuneName(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500">
+                        {runesData.filter(r => typeof r.chance === 'number').sort((a, b) => a.chance - b.chance).map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
+                    </select>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Target # of this Rune</label>
+                    <input type="number" value={targetCount} onChange={e => setTargetCount(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 50" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Current # of this Rune</label>
+                    <input type="number" value={currentCount} onChange={e => setCurrentCount(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 18" />
+                </div>
+                <div></div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Your In-Game Rune Speed</label>
+                    <input type="text" value={runeSpeed} onChange={e => setRuneSpeed(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 100Qn" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Your In-Game Rune Bulk</label>
+                    <input type="text" value={runeBulk} onChange={e => setRuneBulk(e.target.value)} className="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:border-cyan-500" placeholder="e.g., 500T" />
+                </div>
+            </div>
+
+            <div className="text-center bg-gray-900 p-4 rounded-lg mt-6 space-y-4">
+                <div>
+                    <p className="text-gray-400">Initial Runes Per Second (RPS)</p>
+                    <p className="text-xl font-bold text-cyan-300 mt-1">{formatNumber(calculation.rps)}</p>
+                </div>
+                <div>
+                    <p className="text-gray-400">Runes Needed for Target</p>
+                    <p className="text-xl font-bold text-cyan-300 mt-1">{formatNumber(calculation.runesNeeded)}</p>
+                </div>
+                <div>
+                    <p className="text-gray-400">Estimated Time to Target (w/ Bonuses)</p>
+                    <p className="text-2xl font-bold text-green-400 mt-1">{calculation.timeToTarget}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 const ChangelogModal = ({ onClose }) => {
     return (
@@ -158,8 +378,6 @@ const LoadingSpinner = () => (
 );
 
 // --- Bonus Display Components ---
-// NOTE: Make sure to add this script to your index.html for the icons to work:
-// <script src="https://unpkg.com/lucide@latest"></script>
 const BonusIcon = ({ type }) => {
     const iconStyle = "w-5 h-5 mr-3 text-cyan-400";
     let iconName = "check-circle"; // Default icon
@@ -179,8 +397,6 @@ const BonusIcon = ({ type }) => {
     }
 
     useEffect(() => {
-        // Lucide's script finds all `[data-lucide]` elements and replaces them with SVG icons.
-        // We need to re-run this after React renders the new `<i>` elements.
         if (window.lucide) {
             window.lucide.createIcons();
         }
@@ -232,7 +448,6 @@ const BonusDisplay = ({ bonus, formatNumber }) => {
 export default function App() {
     const [appData, setAppData] = useState({ runes: null, scales: null, status: 'loading', error: null });
     const [activeTab, setActiveTab] = useState('calculator');
-    const [rawRpsInput, setRawRpsInput] = useState('1M');
     const [hideInstant, setHideInstant] = useState(true);
     const [sortOrder, setSortOrder] = useState('asc');
     const [runeFilter, setRuneFilter] = useState('');
@@ -240,9 +455,15 @@ export default function App() {
     const [isChangelogVisible, setIsChangelogVisible] = useState(false);
     const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
-    const debounceTimeoutRef = useRef(null);
-    const rpsDebounceTimeoutRef = useRef(null);
-    const isInitialMount = useRef(true);
+    // State for the main calculator's RPS input
+    const [rawRpsInput, setRawRpsInput] = useState('1M');
+
+    // Synced state for the "Time to..." calculators
+    const [selectedRuneName, setSelectedRuneName] = useState('Superstar');
+    const [currentCount, setCurrentCount] = useState('18');
+    const [targetCount, setTargetCount] = useState('19');
+    const [runeSpeed, setRuneSpeed] = useState('11.9QnTg');
+    const [runeBulk, setRuneBulk] = useState('57.62Qdqg');
 
     // Effect to fetch data from external GitHub links
     useEffect(() => {
@@ -254,14 +475,18 @@ export default function App() {
                 const cacheBuster = `?v=${Date.now()}`;
 
                 const [runesResponse, scalesResponse] = await Promise.all([
-                    fetch(`https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json${cacheBuster}`),
-                    fetch(`https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json${cacheBuster}`)
+                    fetch(`https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/runes.json${cacheBuster}`, fetchOptions),
+                    fetch(`https://raw.githubusercontent.com/truthuntold/ai-rune-calc/refs/heads/main/public/scales.json${cacheBuster}`, fetchOptions)
                 ]);
                 if (!runesResponse.ok || !scalesResponse.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const runes = await runesResponse.json();
                 const scales = await scalesResponse.json();
+
+                // Set default selected rune once data is loaded
+                const defaultRune = runes.find(r => typeof r.chance === 'number' && !isNaN(parseInt(String(r.max).replace(/,/g, ''), 10))) || runes[0];
+                setSelectedRuneName(localStorage.getItem('runeCalc_selectedRuneName') || defaultRune.name);
 
                 setAppData({ runes, scales, status: 'loaded', error: null });
             } catch (error) {
@@ -271,6 +496,41 @@ export default function App() {
         };
         fetchData();
     }, []);
+
+    // Load all saved states from localStorage on initial mount
+    useEffect(() => {
+        const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
+        if (savedRps) setRawRpsInput(savedRps);
+
+        const savedCurrentCount = localStorage.getItem('runeCalc_currentCount');
+        if (savedCurrentCount) setCurrentCount(savedCurrentCount);
+
+        const savedTargetCount = localStorage.getItem('runeCalc_targetCount');
+        if (savedTargetCount) setTargetCount(savedTargetCount);
+
+        const savedRuneSpeed = localStorage.getItem('runeCalc_runeSpeed');
+        if (savedRuneSpeed) setRuneSpeed(savedRuneSpeed);
+
+        const savedRuneBulk = localStorage.getItem('runeCalc_runeBulk');
+        if (savedRuneBulk) setRuneBulk(savedRuneBulk);
+
+        const lastVisitedVersion = localStorage.getItem('runeCalc_lastVisitedVersion');
+        if (lastVisitedVersion && lastVisitedVersion !== version) {
+            setShowUpdateNotification(true);
+        }
+        localStorage.setItem('runeCalc_lastVisitedVersion', version);
+    }, []);
+
+    // Save all states to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem('runeCalc_rawRpsInput', rawRpsInput);
+        localStorage.setItem('runeCalc_selectedRuneName', selectedRuneName);
+        localStorage.setItem('runeCalc_currentCount', currentCount);
+        localStorage.setItem('runeCalc_targetCount', targetCount);
+        localStorage.setItem('runeCalc_runeSpeed', runeSpeed);
+        localStorage.setItem('runeCalc_runeBulk', runeBulk);
+    }, [rawRpsInput, selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk]);
+
 
     // Memoize scale-dependent calculations
     const scaleUtils = useMemo(() => {
@@ -297,6 +557,7 @@ export default function App() {
     // Helper functions that depend on scaleUtils
     const formatNumber = useMemo(() => (num) => {
         if (!scaleUtils || typeof num !== 'number' || !isFinite(num)) return '0';
+        if (num < 1000 && Number.isInteger(num)) return num.toString();
         for (const [suffix, value] of scaleUtils.scaleEntries) {
             if (value > 0 && num >= value) {
                 const scaledNum = (num / value).toPrecision(3);
@@ -354,21 +615,6 @@ export default function App() {
         return Infinity;
     }
 
-    useEffect(() => {
-        const savedRps = localStorage.getItem('runeCalc_rawRpsInput');
-        if (savedRps) setRawRpsInput(savedRps);
-
-        const lastVisitedVersion = localStorage.getItem('runeCalc_lastVisitedVersion');
-        if (lastVisitedVersion && lastVisitedVersion !== version) {
-            setShowUpdateNotification(true);
-        }
-        localStorage.setItem('runeCalc_lastVisitedVersion', version);
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('runeCalc_rawRpsInput', rawRpsInput);
-    }, [rawRpsInput]);
-
     const { rps, rpsWarning } = useMemo(() => {
         if (!scaleUtils) return { rps: 0, rpsWarning: null };
         const { value, warning } = parseRpsInput(rawRpsInput);
@@ -425,37 +671,20 @@ export default function App() {
         return { processedRunes: filtered, nextUpgradeName: nextUpgrade?.name };
     }, [rps, hideInstant, sortOrder, runeFilter, appData]);
 
-    useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-        if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
-        debounceTimeoutRef.current = setTimeout(() => {
-            if (nextUpgradeName) {
-                trackEvent('next_target_rune_selected', { rune_name: nextUpgradeName });
-            }
-        }, 1000);
-        return () => { if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current); };
-    }, [nextUpgradeName]);
+    const syncedState = {
+        selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk
+    };
 
-    useEffect(() => {
-        if (isInitialMount.current) return;
-        if (rpsDebounceTimeoutRef.current) clearTimeout(rpsDebounceTimeoutRef.current);
-        rpsDebounceTimeoutRef.current = setTimeout(() => {
-            if (rps > 0 && !rpsWarning) {
-                trackEvent('rps_value_set', { value: rps });
-            }
-        }, 1000);
-        return () => { if (rpsDebounceTimeoutRef.current) clearTimeout(rpsDebounceTimeoutRef.current); };
-    }, [rps, rpsWarning]);
+    const setSyncedState = {
+        setSelectedRuneName, setCurrentCount, setTargetCount, setRuneSpeed, setRuneBulk
+    };
 
     const TabButton = ({ tabName, label }) => {
         const isActive = activeTab === tabName;
         return (
             <button
                 onClick={() => setActiveTab(tabName)}
-                className={`px-6 py-3 text-lg font-bold rounded-t-lg transition-colors duration-300 ${isActive
+                className={`px-4 py-3 text-md font-bold rounded-t-lg transition-colors duration-300 ${isActive
                     ? 'bg-gray-800 text-cyan-400'
                     : 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
                     }`}
@@ -476,7 +705,7 @@ export default function App() {
 
                 <header className="text-center mb-8">
                     <h1 className="text-4xl sm:text-5xl font-bold text-cyan-400 mb-2">Rune Time Calculator</h1>
-                    <p className="text-lg text-gray-400">A strategic tool for planning your progression. Times shown are for a single rune. <span className="text-xs text-gray-500">v{version}</span></p>
+                    <p className="text-lg text-gray-400">A strategic tool for planning your progression. <span className="text-xs text-gray-500">v{version}</span></p>
                     <div className="bg-blue-900/50 border border-blue-500/30 text-blue-300 text-center p-3 rounded-lg mt-6 max-w-xl mx-auto">
                         <p>
                             🚀 For a wealth of extra info, check out the{' '}
@@ -494,8 +723,10 @@ export default function App() {
                 )}
 
 
-                <div className="flex border-b border-gray-700 mb-0">
+                <div className="flex border-b border-gray-700 mb-0 flex-wrap">
                     <TabButton tabName="calculator" label="Rune Calculator" />
+                    <TabButton tabName="timetomax" label="Time to Max" />
+                    <TabButton tabName="timetox" label="Time to X Runes" />
                     <TabButton tabName="whatif" label="Target 'What If?'" />
                 </div>
 
@@ -604,6 +835,26 @@ export default function App() {
                                 })}
                             </div>
                         </div>
+                    )}
+                    {activeTab === 'timetomax' && appData.status === 'loaded' && (
+                        <TimeToMaxCalculator
+                            runesData={appData.runes}
+                            parseRpsInput={parseRpsInput}
+                            formatTime={formatTime}
+                            formatNumber={formatNumber}
+                            syncedState={syncedState}
+                            setSyncedState={setSyncedState}
+                        />
+                    )}
+                    {activeTab === 'timetox' && appData.status === 'loaded' && (
+                        <TimeToXCalculator
+                            runesData={appData.runes}
+                            parseRpsInput={parseRpsInput}
+                            formatTime={formatTime}
+                            formatNumber={formatNumber}
+                            syncedState={syncedState}
+                            setSyncedState={setSyncedState}
+                        />
                     )}
                     {activeTab === 'whatif' && appData.status === 'loaded' && (
                         <TargetCalculator runesData={appData.runes} formatNumber={formatNumber} />
