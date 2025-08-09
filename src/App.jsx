@@ -132,7 +132,22 @@ const calculateCompoundingTime = (rune, startCount, endCount, initialSpeed, init
                 if (bonus.modifier === 'additive') {
                     currentSpeed += value;
                 } else if (bonus.modifier === 'multiplier') {
-                    currentSpeed *= value;
+                    if (bonus.isExponential || bonus.isDualExponential) {
+                        currentSpeed *= value;
+                    } else {
+                        const linear_value = bonus.value - 1;
+                        let mult_before = 1 + count * linear_value;
+                        let mult_after = 1 + (count + 1) * linear_value;
+
+                        if (bonus.max) {
+                            mult_before = Math.min(mult_before, bonus.max);
+                            mult_after = Math.min(mult_after, bonus.max);
+                        }
+
+                        if (mult_before > 0 && mult_before !== mult_after) {
+                            currentSpeed *= (mult_after / mult_before);
+                        }
+                    }
                 } else if (bonus.modifier === 'power') {
                     currentSpeed = Math.pow(currentSpeed, value);
                 }
@@ -140,7 +155,22 @@ const calculateCompoundingTime = (rune, startCount, endCount, initialSpeed, init
                 if (bonus.modifier === 'additive') {
                     currentBulk += value;
                 } else if (bonus.modifier === 'multiplier') {
-                    currentBulk *= value;
+                    if (bonus.isExponential || bonus.isDualExponential) {
+                        currentBulk *= value;
+                    } else {
+                        const linear_value = bonus.value - 1;
+                        let mult_before = 1 + count * linear_value;
+                        let mult_after = 1 + (count + 1) * linear_value;
+
+                        if (bonus.max) {
+                            mult_before = Math.min(mult_before, bonus.max);
+                            mult_after = Math.min(mult_after, bonus.max);
+                        }
+
+                        if (mult_before > 0 && mult_before !== mult_after) {
+                            currentBulk *= (mult_after / mult_before);
+                        }
+                    }
                 } else if (bonus.modifier === 'power') {
                     currentBulk = Math.pow(currentBulk, value);
                 }
