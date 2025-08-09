@@ -91,19 +91,29 @@ function formatTime(totalSeconds) {
 }
 
 // --- Iterative Calculation Logic ---
-const calculateCompoundingTime = (rune, startCount, endCount, initialSpeed, initialBulk) => {
-    if (!rune || !rune.bonuses) return { totalTime: Infinity, finalRps: 0 };
+const calculateCompoundingTime = (rune, startCount, endCount, initialSpeed, initialBulk, formatNumber, formatTime) => {
+    if (!rune || !rune.bonuses) return { totalTime: Infinity, finalRps: 0, traceLog: [] };
 
     let currentSpeed = initialSpeed;
     let currentBulk = initialBulk;
     let totalTimeSeconds = 0;
+    const traceLog = [];
 
     for (let count = startCount; count < endCount; count++) {
         const currentRps = currentSpeed * currentBulk;
-        if (currentRps <= 0) return { totalTime: Infinity, finalRps: 0 };
+        if (currentRps <= 0) return { totalTime: Infinity, finalRps: 0, traceLog: ['Error: RPS is zero or negative.'] };
 
         const timeForNextRune = rune.chance / currentRps;
         totalTimeSeconds += timeForNextRune;
+
+        if (traceLog.length < 200) {
+            const rpsFormatted = formatNumber ? formatNumber(currentRps) : currentRps.toExponential(2);
+            const speedFormatted = formatNumber ? formatNumber(currentSpeed) : currentSpeed.toExponential(2);
+            const bulkFormatted = formatNumber ? formatNumber(currentBulk) : currentBulk.toExponential(2);
+            const timeFormatted = formatTime ? formatTime(timeForNextRune) : `${timeForNextRune.toFixed(2)}s`;
+            traceLog.push(`Rune #${count + 1}: Speed=${speedFormatted}, Bulk=${bulkFormatted}, RPS=${rpsFormatted} -> Time: ${timeFormatted}`);
+        }
+
 
         // Apply bonuses for the rune that was just "acquired"
         rune.bonuses.forEach(bonus => {
@@ -139,7 +149,7 @@ const calculateCompoundingTime = (rune, startCount, endCount, initialSpeed, init
     }
 
     const finalRps = currentSpeed * currentBulk;
-    return { totalTime: totalTimeSeconds, finalRps };
+    return { totalTime: totalTimeSeconds, finalRps, traceLog };
 };
 
 
@@ -190,28 +200,29 @@ const TargetCalculator = ({ runesData, formatNumber }) => {
 const TimeToMaxCalculator = ({ runesData, parseRpsInput, formatTime, formatNumber, syncedState, setSyncedState }) => {
     const { selectedRuneName, currentCount, runeSpeed, runeBulk } = syncedState;
     const { setSelectedRuneName, setCurrentCount, setRuneSpeed, setRuneBulk } = setSyncedState;
+    const [showTrace, setShowTrace] = useState(false);
 
     const calculation = useMemo(() => {
         const rune = runesData.find(r => r.name === selectedRuneName);
-        if (!rune) return { rps: 0, timeToMax: 'Select a rune', runesNeeded: 0 };
+        if (!rune) return { rps: 0, timeToMax: 'Select a rune', runesNeeded: 0, traceLog: [] };
 
         const initialSpeed = parseRpsInput(runeSpeed).value;
         const initialBulk = parseRpsInput(runeBulk).value;
         const initialRps = initialSpeed * initialBulk;
 
         const maxCount = parseInt(String(rune.max).replace(/,/g, ''), 10);
-        if (isNaN(maxCount)) return { rps: initialRps, timeToMax: 'Max count not specified', runesNeeded: 'N/A' };
+        if (isNaN(maxCount)) return { rps: initialRps, timeToMax: 'Max count not specified', runesNeeded: 'N/A', traceLog: [] };
 
         const startCount = parseInt(currentCount, 10) || 0;
         const runesNeeded = maxCount - startCount;
 
-        if (runesNeeded <= 0) return { rps: initialRps, timeToMax: 'Already maxed!', runesNeeded: 0 };
-        if (initialRps <= 0) return { rps: 0, timeToMax: 'Enter valid stats', runesNeeded };
+        if (runesNeeded <= 0) return { rps: initialRps, timeToMax: 'Already maxed!', runesNeeded: 0, traceLog: [] };
+        if (initialRps <= 0) return { rps: 0, timeToMax: 'Enter valid stats', runesNeeded, traceLog: [] };
 
-        const { totalTime } = calculateCompoundingTime(rune, startCount, maxCount, initialSpeed, initialBulk);
+        const { totalTime, traceLog } = calculateCompoundingTime(rune, startCount, maxCount, initialSpeed, initialBulk, formatNumber, formatTime);
 
-        return { rps: initialRps, timeToMax: formatTime(totalTime), runesNeeded };
-    }, [selectedRuneName, currentCount, runeSpeed, runeBulk, runesData, parseRpsInput, formatTime]);
+        return { rps: initialRps, timeToMax: formatTime(totalTime), runesNeeded, traceLog };
+    }, [selectedRuneName, currentCount, runeSpeed, runeBulk, runesData, parseRpsInput, formatTime, formatNumber]);
 
     return (
         <div className="p-1">
@@ -254,6 +265,20 @@ const TimeToMaxCalculator = ({ runesData, parseRpsInput, formatTime, formatNumbe
                     <p className="text-2xl font-bold text-green-400 mt-1">{calculation.timeToMax}</p>
                 </div>
             </div>
+
+            <div className="mt-6">
+                <button
+                    onClick={() => setShowTrace(!showTrace)}
+                    className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                    {showTrace ? 'Hide' : 'Show'} Calculation Trace
+                </button>
+                {showTrace && (
+                    <pre className="bg-gray-900 text-left text-xs text-gray-400 p-4 rounded-b-lg mt-0 max-h-64 overflow-y-auto">
+                        {calculation.traceLog.join('\n')}
+                    </pre>
+                )}
+            </div>
         </div>
     );
 };
@@ -261,10 +286,11 @@ const TimeToMaxCalculator = ({ runesData, parseRpsInput, formatTime, formatNumbe
 const TimeToXCalculator = ({ runesData, parseRpsInput, formatTime, formatNumber, syncedState, setSyncedState }) => {
     const { selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk } = syncedState;
     const { setSelectedRuneName, setCurrentCount, setTargetCount, setRuneSpeed, setRuneBulk } = setSyncedState;
+    const [showTrace, setShowTrace] = useState(false);
 
     const calculation = useMemo(() => {
         const rune = runesData.find(r => r.name === selectedRuneName);
-        if (!rune) return { rps: 0, timeToTarget: 'Select a rune', runesNeeded: 0 };
+        if (!rune) return { rps: 0, timeToTarget: 'Select a rune', runesNeeded: 0, traceLog: [] };
 
         const initialSpeed = parseRpsInput(runeSpeed).value;
         const initialBulk = parseRpsInput(runeBulk).value;
@@ -274,13 +300,13 @@ const TimeToXCalculator = ({ runesData, parseRpsInput, formatTime, formatNumber,
         const startCount = parseInt(currentCount, 10) || 0;
         const runesNeeded = endCount - startCount;
 
-        if (runesNeeded <= 0) return { rps: initialRps, timeToTarget: 'Target reached or passed!', runesNeeded: 0 };
-        if (initialRps <= 0) return { rps: 0, timeToTarget: 'Enter valid stats', runesNeeded };
+        if (runesNeeded <= 0) return { rps: initialRps, timeToTarget: 'Target reached or passed!', runesNeeded: 0, traceLog: [] };
+        if (initialRps <= 0) return { rps: 0, timeToTarget: 'Enter valid stats', runesNeeded, traceLog: [] };
 
-        const { totalTime } = calculateCompoundingTime(rune, startCount, endCount, initialSpeed, initialBulk);
+        const { totalTime, traceLog } = calculateCompoundingTime(rune, startCount, endCount, initialSpeed, initialBulk, formatNumber, formatTime);
 
-        return { rps: initialRps, timeToTarget: formatTime(totalTime), runesNeeded };
-    }, [selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk, runesData, parseRpsInput, formatTime]);
+        return { rps: initialRps, timeToTarget: formatTime(totalTime), runesNeeded, traceLog };
+    }, [selectedRuneName, currentCount, targetCount, runeSpeed, runeBulk, runesData, parseRpsInput, formatTime, formatNumber]);
 
     return (
         <div className="p-1">
@@ -327,6 +353,20 @@ const TimeToXCalculator = ({ runesData, parseRpsInput, formatTime, formatNumber,
                     <p className="text-gray-400">Estimated Time to Target (w/ Bonuses)</p>
                     <p className="text-2xl font-bold text-green-400 mt-1">{calculation.timeToTarget}</p>
                 </div>
+            </div>
+
+            <div className="mt-6">
+                <button
+                    onClick={() => setShowTrace(!showTrace)}
+                    className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                    {showTrace ? 'Hide' : 'Show'} Calculation Trace
+                </button>
+                {showTrace && (
+                    <pre className="bg-gray-900 text-left text-xs text-gray-400 p-4 rounded-b-lg mt-0 max-h-64 overflow-y-auto">
+                        {calculation.traceLog.join('\n')}
+                    </pre>
+                )}
             </div>
         </div>
     );
