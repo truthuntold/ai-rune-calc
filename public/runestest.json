@@ -380,7 +380,7 @@
     {
         "name": "Constellation",
         "source": "Galactic Rune",
-        "chance": 2.5e225,
+        "chance": 2.5e193,
         "max": 100000,
         "note": "Rune Luck doesn't affect this rune!",
         "statsDisplay": "x1 Rune Bulk (MAX x25) + x1 Rune Bulk (MAX x25) + New Talent",
@@ -727,7 +727,7 @@
     {
         "name": "Onyx",
         "source": "Color Rune",
-        "chance": 3.33e248,
+        "chance": 1.25e248,
         "max": "37K for Rune Speed 1 8M for Rune Speed 2",
         "statsDisplay": "x1 Rune Speed (MAX x75)+ x1 Rune Speed (EXPONENTIAL) (MAX x100K)",
         "bonuses": [
@@ -973,7 +973,7 @@
     {
         "name": "Oblivion",
         "source": "Polychrome Rune",
-        "chance": 5e75,
+        "chance": 5e73,
         "max": 2000000,
         "statsDisplay": "x1.02 Rune Bulk (MAX x50k) + New Talent",
         "bonuses": [
@@ -1014,7 +1014,7 @@
     {
         "name": "Raze",
         "source": "Polychrome Rune",
-        "chance": 7.5e213,
+        "chance": 7.5e286,
         "max": "RS@14k/RB@20m/chrome@400m",
         "statsDisplay": "x500 Rune Bulk + x15 Rune Speed + x1K Chrome",
         "bonuses": [
@@ -1076,7 +1076,7 @@
     {
         "name": "Buff",
         "source": "Cryo Rune",
-        "chance": 2e225,
+        "chance": 2e192,
         "max": 35000,
         "note": "Chance is 1/God Knows How Much or 1/2TSg",
         "statsDisplay": "x1 Tickets (MAX x50K) + x1 Tickets (MAX x1M) [BOTH EXPONENTIAL]",
@@ -1100,7 +1100,7 @@
     {
         "name": "Bozo",
         "source": "Cryo Rune",
-        "chance": 2e294,
+        "chance": 1e295,
         "max": "RS@40/Base Chrome@500",
         "statsDisplay": "+50 Base Chrome + x3 Rune Speed",
         "bonuses": [
@@ -1178,7 +1178,7 @@
     {
         "name": "Glint",
         "source": "Arctic Rune",
-        "chance": 3.33e219,
+        "chance": 3.33e296,
         "max": "Chrome@2k/RS@6.3m/chrome@1b",
         "statsDisplay": "x500 RS [EXP] + x100 Chrome + x1K Chrome",
         "bonuses": [
