@@ -1014,7 +1014,7 @@
     {
         "name": "Raze",
         "source": "Polychrome Rune",
-        "chance": 7.5e286,
+        "chance": 2.5e286,
         "max": "RS@14k/RB@20m/chrome@400m",
         "statsDisplay": "x500 Rune Bulk + x15 Rune Speed + x1K Chrome",
         "bonuses": [
